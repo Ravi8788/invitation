@@ -77,11 +77,15 @@ export class FrameSequenceScrubber {
     return scrubber;
   }
 
-  private loadFrame(index: number): Promise<HTMLImageElement> {
-    const img = new Image();
-    img.decoding = "async";
-    img.src = heroFrameUrl(index);
-    return img.decode().then(() => img);
+  private loadFrame(index: number): Promise<HTMLImageElement | undefined> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.decoding = "async";
+      const finish = () => resolve(img.naturalWidth > 0 ? img : undefined);
+      img.onload = finish;
+      img.onerror = () => resolve(undefined);
+      img.src = heroFrameUrl(index);
+    });
   }
 
   private async preloadFirstBatch(onProgress?: (loaded: number, total: number) => void) {
@@ -89,10 +93,17 @@ export class FrameSequenceScrubber {
     const batch = await Promise.all(
       Array.from({ length: end }, (_, index) => this.loadFrame(index)),
     );
+    let loaded = 0;
     for (let i = 0; i < batch.length; i += 1) {
-      this.frames[i] = batch[i];
+      if (batch[i]) {
+        this.frames[i] = batch[i];
+        loaded += 1;
+      }
     }
-    onProgress?.(batch.length, this.frameCount);
+    onProgress?.(loaded, this.frameCount);
+    if (!this.frames[0]) {
+      throw new Error(`Hero frame missing: ${heroFrameUrl(0)}`);
+    }
   }
 
   private async preloadRemaining(onProgress?: (loaded: number, total: number) => void) {
@@ -104,7 +115,9 @@ export class FrameSequenceScrubber {
         Array.from({ length: end - i }, (_, j) => this.loadFrame(i + j)),
       );
       for (let j = 0; j < batch.length; j += 1) {
-        this.frames[i + j] = batch[j];
+        if (batch[j]) {
+          this.frames[i + j] = batch[j];
+        }
       }
       loaded += batch.length;
       onProgress?.(loaded, this.frameCount);

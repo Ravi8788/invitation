@@ -105,7 +105,11 @@ export class HeroScrollEngine {
 
     syncScrollLayout(lenis);
 
-    this.scrubber = await FrameSequenceScrubber.create(canvas);
+    try {
+      this.scrubber = await FrameSequenceScrubber.create(canvas);
+    } catch (error) {
+      console.error("[HeroScrollEngine] Frame sequence failed to load:", error);
+    }
 
     syncScrollLayout(lenis);
     setTimeout(() => syncScrollLayout(lenis), 100);
