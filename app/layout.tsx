@@ -40,7 +40,7 @@ const notoDevanagari = Noto_Serif_Devanagari({
 });
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://sonal-avishkar.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://invitation-ashen-phi.vercel.app";
 
 export const viewport: Viewport = {
   width: "device-width",
