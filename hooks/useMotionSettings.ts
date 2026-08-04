@@ -17,7 +17,7 @@ export function useMotionSettings() {
   }, []);
 
   const durationScale = reduced ? 1 : isMobile ? MOTION.mobileScale : 1;
-  const particleScale = reduced ? 0 : isMobile ? 0.65 : 1;
+  const particleScale = reduced ? 0 : isMobile ? 0.35 : 0.65;
 
   return {
     reduced: !!reduced,

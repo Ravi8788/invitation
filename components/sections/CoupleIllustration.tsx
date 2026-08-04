@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import {
   motion,
@@ -10,6 +9,7 @@ import {
 } from "framer-motion";
 import { WEDDING } from "@/lib/constants";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { AmbientPetals } from "@/components/animations/AmbientPetals";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SectionShell } from "@/components/ui/SectionShell";
 
@@ -29,11 +29,13 @@ export function CoupleIllustration() {
     <SectionShell
       ref={sectionRef}
       theme="warm"
+      cinematic
       className="overflow-hidden"
       aria-label="Couple illustration"
     >
-      <FadeIn className="mx-auto flex max-w-4xl flex-col items-center">
-        <SectionHeading title="The Couple" className="mb-12" />
+      <AmbientPetals count={6} />
+      <FadeIn className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center">
+        <SectionHeading title="The Couple" eyebrow="Together Forever" className="mb-10 sm:mb-12" />
 
         <div className="relative flex w-full items-center justify-center">
           <motion.div
@@ -67,20 +69,19 @@ export function CoupleIllustration() {
                 ease: "easeInOut",
               }}
             >
-              <div className="relative overflow-hidden rounded-3xl border border-primary/25 bg-bg-secondary/80 p-3 shadow-[0_20px_60px_rgba(107,30,35,0.12),inset_0_1px_0_rgba(255,255,255,0.8)]">
+              <div className="relative overflow-hidden rounded-t-[min(50vw,240px)] rounded-b-3xl border-2 border-primary/35 bg-bg-secondary/80 p-3 shadow-[0_24px_70px_rgba(122,30,43,0.14),inset_0_1px_0_rgba(255,255,255,0.85)]">
                 <div
-                  className="pointer-events-none absolute inset-3 rounded-2xl border border-primary/20"
+                  className="pointer-events-none absolute inset-3 rounded-t-[min(48vw,228px)] rounded-b-2xl border border-primary/25"
                   aria-hidden="true"
                 />
-                <Image
-                  src={couple.caricature}
-                  alt={`Caricature portrait of ${couple.bride} and ${couple.groom}`}
-                  width={640}
-                  height={853}
-                  priority
-                  className="relative z-10 h-auto w-full rounded-2xl object-cover"
-                  sizes="(max-width: 768px) 90vw, 512px"
+                {/* Arch crown ornament */}
+                <div
+                  className="pointer-events-none absolute left-1/2 top-3 z-20 h-8 w-24 -translate-x-1/2 rounded-full border border-primary/30 bg-bg/80"
+                  aria-hidden="true"
                 />
+                <div className="relative z-10 flex min-h-[320px] items-center justify-center rounded-b-2xl rounded-t-[min(46vw,220px)] bg-[radial-gradient(circle,rgba(212,180,131,0.12)_0%,transparent_70%)]">
+                  <span className="font-script text-6xl text-gold-gradient md:text-7xl">{couple.monogram}</span>
+                </div>
               </div>
             </motion.div>
           </motion.div>

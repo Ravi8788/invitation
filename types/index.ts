@@ -2,7 +2,7 @@ export interface Couple {
   bride: string;
   groom: string;
   monogram: string;
-  caricature: string;
+  caricature?: string;
   brideParents: string;
   groomParents: string;
   initials: string;
@@ -20,6 +20,8 @@ export interface WeddingDate {
 export interface HeroContent {
   eyebrow: string;
   tagline: string;
+  sanskrit?: string;
+  scrollHint?: string;
 }
 
 export interface Venue {
@@ -41,6 +43,8 @@ export interface StoryMilestone {
   description: string;
   icon: "users" | "heart" | "gem" | "sparkles";
   year?: string;
+  monthLabel?: string;
+  image?: string;
 }
 
 export interface PromiseContent {
@@ -90,6 +94,8 @@ export interface FamilyMember {
 export interface Family {
   title: string;
   note: string;
+  label?: string;
+  subtitle?: string;
   members: FamilyMember[];
 }
 

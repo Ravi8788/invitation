@@ -8,23 +8,17 @@ import { Check, Heart, Loader2, Sparkles } from "lucide-react";
 import { WEDDING } from "@/lib/constants";
 import { blessingsSchema, type BlessingsFormData } from "@/lib/validations";
 import { HeartConfetti } from "@/components/animations/HeartConfetti";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { SectionShell } from "@/components/ui/SectionShell";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionAtmosphere } from "@/components/ui/SectionAtmosphere";
+import { SectionShell } from "@/components/ui/SectionShell";
 import { cn } from "@/lib/utils";
 
-function FieldLabel({
-  htmlFor,
-  children,
-}: {
-  htmlFor: string;
-  children: React.ReactNode;
-}) {
+function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
   return (
     <label
       htmlFor={htmlFor}
-      className="font-body mb-2 block text-xs uppercase tracking-[0.2em] text-text-muted"
+      className="font-body mb-2 block text-xs uppercase tracking-[0.2em] text-ivory/50"
     >
       {children}
     </label>
@@ -34,7 +28,7 @@ function FieldLabel({
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p className="font-body mt-1.5 text-xs text-maroon" role="alert">
+    <p className="font-body mt-1.5 text-xs text-gold-light/90" role="alert">
       {message}
     </p>
   );
@@ -42,9 +36,7 @@ function FieldError({ message }: { message?: string }) {
 
 export function Blessings() {
   const { blessings } = WEDDING;
-  const [submitState, setSubmitState] = useState<"idle" | "loading" | "success">(
-    "idle"
-  );
+  const [submitState, setSubmitState] = useState<"idle" | "loading" | "success">("idle");
   const [shake, setShake] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
 
@@ -88,21 +80,23 @@ export function Blessings() {
   return (
     <SectionShell
       id="blessings"
-      theme="warm"
-      className="overflow-hidden"
+      theme="cinematic"
+      atmosphere={<SectionAtmosphere embers={3} />}
+      contentClassName="max-w-[600px]"
       aria-labelledby="blessings-heading"
     >
-      <FadeIn className="relative mx-auto max-w-[600px]">
+      <FadeIn className="relative w-full">
         <div className="mb-10 flex justify-center">
           <SectionHeading
             title="Share Your Blessings"
             headingId="blessings-heading"
             eyebrow="A Note for the Couple"
+            theme="cinematic"
           />
         </div>
 
         <div className="relative">
-          <GlassCard className="p-6 md:p-10">
+          <div className="invitation-card p-6 md:p-10">
             <AnimatePresence mode="wait">
               {submitState === "success" ? (
                 <motion.div
@@ -116,14 +110,14 @@ export function Blessings() {
                     initial={{ scale: 0, rotate: -20 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: "spring", stiffness: 280, damping: 16 }}
-                    className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-maroon to-primary"
+                    className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#8a6a3d] via-[#b8935a] to-[#d4b483]"
                   >
-                    <Check className="h-8 w-8 text-ivory" strokeWidth={2.5} />
+                    <Check className="h-8 w-8 text-twilight" strokeWidth={2.5} />
                   </motion.div>
-                  <p className="font-display text-xl text-maroon sm:text-2xl">
+                  <p className="font-display text-xl text-gold-gradient sm:text-2xl">
                     {blessings.successMessage}
                   </p>
-                  <p className="font-body mt-3 text-sm text-text-muted">
+                  <p className="font-body mt-3 text-sm text-ivory/55">
                     Your words mean the world to us
                   </p>
                 </motion.div>
@@ -135,11 +129,8 @@ export function Blessings() {
                   noValidate
                 >
                   <div className="mb-8 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                    <Sparkles
-                      className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                      strokeWidth={1.5}
-                    />
-                    <p className="font-body text-sm italic leading-relaxed text-text-muted">
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" strokeWidth={1.5} />
+                    <p className="font-body text-sm italic leading-relaxed text-ivory/55">
                       {blessings.intro}
                     </p>
                   </div>
@@ -151,9 +142,10 @@ export function Blessings() {
                         id="blessings-name"
                         {...register("name")}
                         className={cn(
-                          "font-body w-full rounded-xl border bg-bg/80 px-4 py-3 text-sm text-text outline-none transition-colors",
-                          "border-primary/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/15",
-                          errors.name && "border-maroon/50"
+                          "font-body w-full rounded-xl border px-4 py-3 text-sm text-ivory outline-none transition-colors",
+                          "border-primary/25 bg-twilight/70 placeholder:text-ivory/35",
+                          "focus:border-primary/50 focus:ring-2 focus:ring-primary/15",
+                          errors.name && "border-[#d4b483]/60"
                         )}
                         placeholder="How should we remember you?"
                         autoComplete="name"
@@ -162,17 +154,16 @@ export function Blessings() {
                     </div>
 
                     <div>
-                      <FieldLabel htmlFor="blessings-message">
-                        Your Blessing
-                      </FieldLabel>
+                      <FieldLabel htmlFor="blessings-message">Your Blessing</FieldLabel>
                       <textarea
                         id="blessings-message"
                         {...register("message")}
                         rows={4}
                         className={cn(
-                          "font-body w-full resize-none rounded-xl border bg-bg/80 px-4 py-3 text-sm text-text outline-none transition-colors",
-                          "border-primary/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/15",
-                          errors.message && "border-maroon/50"
+                          "font-body w-full resize-none rounded-xl border px-4 py-3 text-sm text-ivory outline-none transition-colors",
+                          "border-primary/25 bg-twilight/70 placeholder:text-ivory/35",
+                          "focus:border-primary/50 focus:ring-2 focus:ring-primary/15",
+                          errors.message && "border-[#d4b483]/60"
                         )}
                         placeholder="A wish, a memory, or a few words of love..."
                       />
@@ -186,13 +177,7 @@ export function Blessings() {
                       disabled={submitState === "loading"}
                       whileHover={{ scale: submitState === "loading" ? 1 : 1.03 }}
                       whileTap={{ scale: submitState === "loading" ? 1 : 0.97 }}
-                      className={cn(
-                        "relative flex min-w-[220px] items-center justify-center gap-2 overflow-hidden rounded-full px-10 py-4",
-                        "font-body text-sm font-medium uppercase tracking-[0.2em] text-ivory",
-                        "bg-gradient-to-r from-maroon-deep via-maroon to-primary-dark",
-                        "shadow-[0_8px_32px_rgba(78,16,24,0.35),inset_0_1px_0_rgba(212,175,55,0.35)]",
-                        "disabled:cursor-not-allowed disabled:opacity-70"
-                      )}
+                      className="btn-gold-cinematic relative min-w-[220px] disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       {submitState === "loading" ? (
                         <>
@@ -210,12 +195,9 @@ export function Blessings() {
                 </motion.form>
               )}
             </AnimatePresence>
-          </GlassCard>
+          </div>
 
-          <HeartConfetti
-            active={showHearts}
-            onComplete={() => setShowHearts(false)}
-          />
+          <HeartConfetti active={showHearts} onComplete={() => setShowHearts(false)} />
         </div>
       </FadeIn>
     </SectionShell>

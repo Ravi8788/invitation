@@ -11,9 +11,17 @@ export interface CountdownTime {
 
 export interface UseCountdownReturn extends CountdownTime {
   isComplete: boolean;
+  /** False until client has mounted — use to avoid SSR/client time mismatch */
+  isReady: boolean;
 }
 
 const ZERO: CountdownTime = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+const PLACEHOLDER: UseCountdownReturn = {
+  ...ZERO,
+  isComplete: false,
+  isReady: false,
+};
 
 function computeTimeLeft(targetMs: number): CountdownTime | null {
   const diff = targetMs - Date.now();
@@ -27,26 +35,18 @@ function computeTimeLeft(targetMs: number): CountdownTime | null {
   };
 }
 
-function getInitialState(targetMs: number): UseCountdownReturn {
-  const next = computeTimeLeft(targetMs);
-  if (!next) return { ...ZERO, isComplete: true };
-  return { ...next, isComplete: false };
-}
-
 export function useCountdown(isoDate: string): UseCountdownReturn {
   const targetMs = useMemo(() => new Date(isoDate).getTime(), [isoDate]);
-  const [state, setState] = useState<UseCountdownReturn>(() =>
-    getInitialState(targetMs)
-  );
+  const [state, setState] = useState<UseCountdownReturn>(PLACEHOLDER);
 
   useEffect(() => {
     const tick = () => {
       const next = computeTimeLeft(targetMs);
       if (!next) {
-        setState({ ...ZERO, isComplete: true });
+        setState({ ...ZERO, isComplete: true, isReady: true });
         return;
       }
-      setState({ ...next, isComplete: false });
+      setState({ ...next, isComplete: false, isReady: true });
     };
 
     tick();

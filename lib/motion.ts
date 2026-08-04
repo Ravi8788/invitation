@@ -7,7 +7,7 @@ export const MOTION = {
     slow: 0.7,
     reduced: 0.35,
   },
-  mobileScale: 0.85,
+  mobileScale: 0.7,
   heading: {
     y: 20,
     blur: 4,

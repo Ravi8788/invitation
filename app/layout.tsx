@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import type { Metadata } from "next";
 import { Cinzel, Poppins, Great_Vibes } from "next/font/google";
 import { WEDDING } from "@/lib/constants";
@@ -9,14 +10,16 @@ const cinzel = Cinzel({
   variable: "--font-cinzel",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
+  preload: true,
 });
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600"],
+  preload: true,
 });
 
 const greatVibes = Great_Vibes({
@@ -24,10 +27,18 @@ const greatVibes = Great_Vibes({
   subsets: ["latin"],
   display: "swap",
   weight: ["400"],
+  preload: true,
 });
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://sonal-avishkar.vercel.app";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0f1529",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -95,7 +106,10 @@ export default function RootLayout({
         greatVibes.variable
       )}
     >
-      <body className="min-h-full font-body bg-bg text-text">
+      <head>
+        <link rel="preload" href="/videos/background.mp4" as="video" type="video/mp4" />
+      </head>
+      <body className="min-h-full font-body bg-twilight text-ivory">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

@@ -4,13 +4,10 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-
-const LOADER_SESSION_KEY = "sonal-avishkar-engagement-seen";
 
 interface InvitationContextValue {
   isOpened: boolean;
@@ -28,28 +25,10 @@ export const InvitationContext = createContext<InvitationContextValue | null>(
 );
 
 export function InvitationProvider({ children }: { children: ReactNode }) {
-  const [skipLoader, setSkipLoader] = useState(false);
-  const [loaderComplete, setLoaderComplete] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    const seen = sessionStorage.getItem(LOADER_SESSION_KEY) === "true";
-    const frame = requestAnimationFrame(() => {
-      setSkipLoader(seen);
-      if (seen) {
-        setLoaderComplete(true);
-        setIsOpened(true);
-      }
-      setHydrated(true);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
 
   const completeLoader = useCallback(() => {
-    sessionStorage.setItem(LOADER_SESSION_KEY, "true");
-    setLoaderComplete(true);
     setIsOpened(true);
   }, []);
 
@@ -62,30 +41,18 @@ export function InvitationProvider({ children }: { children: ReactNode }) {
     setShowConfetti(false);
   }, []);
 
-  const isScrollLocked = hydrated && !skipLoader && !loaderComplete;
-
   const value = useMemo(
     () => ({
       isOpened,
-      isScrollLocked,
-      loaderComplete: !hydrated ? false : skipLoader || loaderComplete,
-      skipLoader: hydrated && skipLoader,
+      isScrollLocked: false,
+      loaderComplete: true,
+      skipLoader: true,
       showConfetti,
       openInvitation,
       completeLoader,
       dismissConfetti,
     }),
-    [
-      isOpened,
-      isScrollLocked,
-      hydrated,
-      skipLoader,
-      loaderComplete,
-      showConfetti,
-      openInvitation,
-      completeLoader,
-      dismissConfetti,
-    ]
+    [isOpened, showConfetti, openInvitation, completeLoader, dismissConfetti]
   );
 
   return (

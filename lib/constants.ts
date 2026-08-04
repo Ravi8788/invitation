@@ -1,4 +1,5 @@
 import type { WeddingConfig } from "@/types";
+import { PROMISE_RING } from "@/lib/images";
 
 /** Single-event engagement invitation — Sonal & Avishkar */
 export const WEDDING: WeddingConfig = {
@@ -9,15 +10,14 @@ export const WEDDING: WeddingConfig = {
     groom: "Avishkar",
     monogram: "S ❤ A",
     initials: "SA",
-    caricature: "/images/couple-caricature.png",
     brideParents: "Mrs. Sharma & Mr. Sharma",
     groomParents: "Mrs. Patil & Mr. Patil",
   },
 
   hero: {
-    eyebrow: "Together with their families",
-    tagline:
-      "Two souls, one heart, woven by destiny — request the joy of your presence as we begin our forever",
+    eyebrow: "You're Cordially Invited",
+    scrollHint: "Scroll to begin the story",
+    tagline: "Ring ceremony & celebration with our families",
   },
 
   subtitle:
@@ -27,11 +27,11 @@ export const WEDDING: WeddingConfig = {
     "Our paths crossed at a mutual friend's gathering — what began as chance quickly became late-night conversations, shared dreams, and countless cups of chai. We discovered a love that felt like home, and now we invite you to celebrate the beginning of our forever.",
 
   weddingDate: {
-    date: "20 December 2026",
-    time: "6:00 PM",
-    iso: "2026-12-20T18:00:00+05:30",
-    display: "20 December 2026 · 6:00 PM",
-    dateRange: "20 December 2026",
+    date: "16 August 2026",
+    time: "11:00 AM",
+    iso: "2026-08-16T11:00:00+05:30",
+    display: "16 August 2026 · 11:00 AM",
+    dateRange: "16 August 2026",
     celebrationTitle: "Ring Ceremony & Celebration",
   },
 
@@ -57,23 +57,26 @@ export const WEDDING: WeddingConfig = {
   story: [
     {
       id: "first-meet",
-      title: "First Meet",
+      title: "A Chance Encounter",
+      monthLabel: "OCTOBER 2019",
       description:
-        "Our paths crossed at a mutual friend's gathering — a chance encounter that felt anything but accidental.",
+        "Our paths crossed at a mutual friend's gathering — a chance encounter that felt anything but accidental. One conversation led to another, and we knew something special had begun.",
       icon: "users",
       year: "2019",
     },
     {
       id: "falling-in-love",
-      title: "Falling in Love",
+      title: "The Alignment of Hearts",
+      monthLabel: "MARCH 2020",
       description:
-        "Late-night conversations, shared dreams, and countless cups of chai — we discovered a love that felt like home.",
+        "Late-night conversations, shared dreams, and countless cups of chai — we discovered a love that felt like home. Every moment together felt written in the stars.",
       icon: "heart",
       year: "2020",
     },
     {
       id: "engagement",
-      title: "The Engagement",
+      title: "The Auspicious Betrothal",
+      monthLabel: "SEPTEMBER 2026",
       description:
         "Under a canopy of stars, Avishkar asked the question. Sonal said yes — and now we invite you to celebrate this cherished milestone with us.",
       icon: "gem",
@@ -83,19 +86,18 @@ export const WEDDING: WeddingConfig = {
 
   promise: {
     subtitle: "A promise made, a forever begun",
-    date: "16 September 2026",
+    date: "16 August 2026",
     captionSuffix: "The moment it became forever",
-    caption: "16 September 2026 · The moment it became forever",
-    /** Public path to the engagement ring photo */
-    ringImage: "/images/engagement-ring.png",
+    caption: "16 August 2026 · The moment it became forever",
+    ringImage: PROMISE_RING,
   },
 
   events: [
     {
       id: "engagement",
       name: "Engagement Ceremony",
-      date: "20 December 2026",
-      time: "6:00 PM",
+      date: "16 August 2026",
+      time: "11:00 AM",
       venue: "Lakeview Hotel, Satara",
       description:
         "Join us for the ring ceremony, blessings from our families, and an evening of celebration.",
@@ -130,6 +132,8 @@ export const WEDDING: WeddingConfig = {
   families: {
     bride: {
       title: "Bride's Side",
+      label: "Swagatotsuk",
+      subtitle: "Welcomed With Joy By",
       note: "With hearts full of joy, we welcome you to celebrate our daughter's engagement.",
       members: [
         { name: "Mr. & Mrs. Sharma", relation: "Parents of the Bride" },
@@ -138,6 +142,8 @@ export const WEDDING: WeddingConfig = {
     },
     groom: {
       title: "Groom's Side",
+      label: "Darshanaabhilashi",
+      subtitle: "Awaiting Your Blessings",
       note: "With immense pride and happiness, we invite you to bless our son on this special day.",
       members: [
         { name: "Mr. & Mrs. Patil", relation: "Parents of the Groom" },
@@ -182,10 +188,9 @@ export const WEDDING: WeddingConfig = {
   metadata: {
     title: "Sonal & Avishkar — Engagement Invitation",
     description:
-      "Join Sonal and Avishkar for their engagement ceremony on 20 December 2026 at Lakeview Hotel, Satara.",
+      "Join Sonal and Avishkar for their engagement ceremony on 16 August 2026 at Lakeview Hotel, Satara.",
     ogImage: "/opengraph-image",
   },
 } as const;
 
-/** Preferred alias for engagement-only scope */
 export const INVITATION = WEDDING;

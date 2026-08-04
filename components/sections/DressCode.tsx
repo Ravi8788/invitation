@@ -132,7 +132,7 @@ export function DressCode() {
   return (
     <SectionShell
       id="attire"
-      theme="maroon"
+      theme="cinematic"
       className="relative overflow-hidden py-24 md:py-32"
       aria-labelledby="attire-heading"
     >
@@ -162,7 +162,7 @@ export function DressCode() {
           <BlurFadeIn
             as="p"
             delay={0.14}
-            className="font-body mx-auto mt-4 max-w-lg text-base italic text-maroon/80 sm:text-lg"
+            className="font-body mx-auto mt-4 max-w-lg text-base italic text-ivory/65 sm:text-lg"
           >
             {attire.subtitle}
           </BlurFadeIn>
@@ -180,7 +180,7 @@ export function DressCode() {
           transition={{ duration: 0.55, delay: 0.5, ease: MOTION.ease }}
         >
           <Sparkles className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={1.5} />
-          <p className="font-body text-xs text-maroon/80 sm:text-sm">{attire.avoidNote}</p>
+          <p className="font-body text-xs text-ivory/55 sm:text-sm">{attire.avoidNote}</p>
         </motion.div>
       </div>
     </SectionShell>

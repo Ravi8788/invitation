@@ -12,7 +12,7 @@ interface SectionHeadingProps {
   className?: string;
   align?: "center" | "left";
   /** Use "maroon" when heading sits on a maroon section background */
-  theme?: "ivory" | "maroon";
+  theme?: "ivory" | "maroon" | "cinematic";
   /** Optional small-caps label above the title */
   eyebrow?: string;
 }
@@ -28,6 +28,7 @@ export function SectionHeading({
   const reduced = useReducedMotion();
   const { duration } = useMotionSettings();
   const onMaroon = theme === "maroon";
+  const onCinematic = theme === "cinematic";
 
   return (
     <div
@@ -51,7 +52,7 @@ export function SectionHeading({
         id={headingId}
         className={cn(
           "font-display text-3xl font-semibold tracking-[0.12em] sm:text-4xl",
-          onMaroon ? "text-gold-gradient" : "text-text"
+          onMaroon ? "text-gold-gradient" : onCinematic ? "text-ivory" : "text-maroon"
         )}
       >
         {title}

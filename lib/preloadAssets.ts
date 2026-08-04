@@ -1,6 +1,23 @@
-import { WEDDING } from "@/lib/constants";
+import { PRELOAD_IMAGES } from "@/lib/images";
+import { HERO_VIDEO } from "@/lib/videos";
 
-const CRITICAL_ASSETS = [WEDDING.couple.caricature].filter(Boolean);
+function preloadVideo(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    const video = document.createElement("video");
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+    const finish = () => {
+      video.removeEventListener("canplaythrough", finish);
+      video.removeEventListener("error", finish);
+      resolve();
+    };
+    video.addEventListener("canplaythrough", finish, { once: true });
+    video.addEventListener("error", finish, { once: true });
+    video.src = src;
+    video.load();
+  });
+}
 
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
@@ -30,8 +47,9 @@ export async function preloadAssets(
     preloadFont("Poppins"),
     preloadFont("Great Vibes"),
   ];
-  const imageJobs = CRITICAL_ASSETS.map(preloadImage);
-  const jobs = [...fontJobs, ...imageJobs];
+  const imageJobs = PRELOAD_IMAGES.map(preloadImage);
+  const videoJob = preloadVideo(HERO_VIDEO);
+  const jobs = [...fontJobs, ...imageJobs, videoJob];
   const total = jobs.length;
   let completed = 0;
 

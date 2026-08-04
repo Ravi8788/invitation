@@ -45,7 +45,10 @@ export function CornerDiyas({ className }: { className?: string }) {
 
   return (
     <div
-      className={cn("pointer-events-none fixed inset-0 z-[60] overflow-hidden", className)}
+      className={cn(
+        "pointer-events-none fixed inset-0 z-[60] hidden overflow-hidden md:block",
+        className
+      )}
       aria-hidden="true"
     >
       {CORNERS.map((corner) => (

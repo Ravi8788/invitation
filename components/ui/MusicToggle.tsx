@@ -45,7 +45,7 @@ export function MusicToggle() {
       transition={{ delay: 1.2, duration: 0.5 }}
       className={cn(
         "fixed bottom-6 left-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full",
-        "border border-primary/30 bg-bg/80 text-primary shadow-lg backdrop-blur-md",
+        "border border-primary/30 bg-twilight/85 text-gold-light shadow-lg backdrop-blur-md",
         "transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
       )}
       aria-label={isPlaying ? "Mute background music" : "Play background music"}

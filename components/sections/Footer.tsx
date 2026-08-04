@@ -26,18 +26,18 @@ export function Footer() {
   return (
     <>
       <SectionShell
-        theme="maroon"
+        theme="cinematic"
         className="pb-28 pt-16 md:pb-32 md:pt-20"
         aria-label="Site footer"
       >
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <p className="font-body text-sm text-maroon/85 sm:text-base">
+          <p className="font-body text-sm text-ivory/65 sm:text-base">
             Made with <span aria-hidden="true">❤</span> for {couple.bride} &amp;{" "}
             {couple.groom}
           </p>
 
           <div className="my-8 w-full max-w-xs sm:max-w-sm">
-            <OrnamentalDivider className="text-maroon/55" />
+            <OrnamentalDivider className="text-primary/45" />
           </div>
         </div>
       </SectionShell>
@@ -53,8 +53,8 @@ export function Footer() {
         }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         className={cn(
-          "fixed bottom-6 right-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full",
-          "border border-primary/40 bg-maroon-deep/90 text-primary shadow-lg backdrop-blur-md",
+          "fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] z-[90] flex h-11 w-11 items-center justify-center rounded-full",
+          "border border-primary/40 bg-twilight/90 text-gold-light shadow-lg backdrop-blur-md",
           "transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         )}
         aria-label="Back to top"

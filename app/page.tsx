@@ -1,22 +1,21 @@
 import dynamic from "next/dynamic";
 import { InvitationExperience } from "@/components/InvitationExperience";
-import { WeddingDate } from "@/components/sections/WeddingDate";
 import { Countdown } from "@/components/sections/Countdown";
 import { Footer } from "@/components/sections/Footer";
 import { BlessingsSkeleton } from "@/components/sections/BlessingsSkeleton";
 import { SectionSkeleton } from "@/components/sections/SectionSkeleton";
 
+const WeddingDate = dynamic(
+  () =>
+    import("@/components/sections/WeddingDate").then((m) => ({
+      default: m.WeddingDate,
+    })),
+  { loading: () => <SectionSkeleton label="save the date" compact /> }
+);
+
 const OurStory = dynamic(
   () => import("@/components/sections/OurStory").then((m) => ({ default: m.OurStory })),
   { loading: () => <SectionSkeleton label="our story" /> }
-);
-
-const CoupleIllustration = dynamic(
-  () =>
-    import("@/components/sections/CoupleIllustration").then((m) => ({
-      default: m.CoupleIllustration,
-    })),
-  { loading: () => <SectionSkeleton label="couple" /> }
 );
 
 const EngagementCeremony = dynamic(
@@ -24,7 +23,7 @@ const EngagementCeremony = dynamic(
     import("@/components/sections/EngagementCeremony").then((m) => ({
       default: m.EngagementCeremony,
     })),
-  { loading: () => <SectionSkeleton label="ceremony" theme="maroon" /> }
+  { loading: () => <SectionSkeleton label="ceremony" theme="cinematic" /> }
 );
 
 const Venue = dynamic(
@@ -35,11 +34,6 @@ const Venue = dynamic(
 const ThePromise = dynamic(
   () => import("@/components/sections/ThePromise").then((m) => ({ default: m.ThePromise })),
   { loading: () => <SectionSkeleton label="the promise" /> }
-);
-
-const DressCode = dynamic(
-  () => import("@/components/sections/DressCode").then((m) => ({ default: m.DressCode })),
-  { loading: () => <SectionSkeleton label="attire" theme="maroon" /> }
 );
 
 const Quote = dynamic(
@@ -54,7 +48,7 @@ const Blessings = dynamic(
 
 const Family = dynamic(
   () => import("@/components/sections/Family").then((m) => ({ default: m.Family })),
-  { loading: () => <SectionSkeleton label="family" theme="maroon" /> }
+  { loading: () => <SectionSkeleton label="family" theme="cinematic" /> }
 );
 
 const GuestAssistance = dynamic(
@@ -71,11 +65,9 @@ export default function Home() {
       <WeddingDate />
       <OurStory />
       <Countdown />
-      <CoupleIllustration />
       <EngagementCeremony />
       <Venue />
       <ThePromise />
-      <DressCode />
       <Quote />
       <Blessings />
       <Family />

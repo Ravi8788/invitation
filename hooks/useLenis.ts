@@ -2,12 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import type Lenis from "lenis";
+import { MOBILE_BREAKPOINT } from "@/lib/motion";
+import { isTouchDevice } from "@/lib/isTouchDevice";
 import { prefersReducedMotion } from "@/lib/utils";
 
 export interface UseLenisReturn {
   lenisRef: React.RefObject<Lenis | null>;
   isReady: boolean;
   isSmooth: boolean;
+}
+
+function shouldUseSmoothScroll(): boolean {
+  if (typeof window === "undefined") return false;
+  if (prefersReducedMotion()) return false;
+  if (isTouchDevice()) return false;
+  if (window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`).matches) {
+    return false;
+  }
+  return true;
 }
 
 export function useLenis(): UseLenisReturn {
@@ -20,9 +32,7 @@ export function useLenis(): UseLenisReturn {
     let cleanup: (() => void) | undefined;
 
     const init = async () => {
-      const reducedMotion = prefersReducedMotion();
-
-      if (reducedMotion) {
+      if (!shouldUseSmoothScroll()) {
         if (cancelled) return;
         setIsSmooth(false);
         setIsReady(true);
@@ -41,16 +51,37 @@ export function useLenis(): UseLenisReturn {
       gsap.registerPlugin(ScrollTrigger);
 
       const lenis = new LenisCtor({
-        lerp: 0.1,
+        lerp: 0.14,
         smoothWheel: true,
         autoRaf: false,
       });
 
       lenisRef.current = lenis;
+      (window as Window & { __lenis?: Lenis }).__lenis = lenis;
       setIsSmooth(true);
       setIsReady(true);
 
       lenis.on("scroll", ScrollTrigger.update);
+
+      ScrollTrigger.scrollerProxy(document.body, {
+        scrollTop(value) {
+          if (arguments.length && value !== undefined) {
+            lenis.scrollTo(value, { immediate: true });
+          }
+          return lenis.scroll;
+        },
+        getBoundingClientRect() {
+          return {
+            top: 0,
+            left: 0,
+            width: window.innerWidth,
+            height: window.innerHeight,
+          };
+        },
+        pinType: document.body.style.transform ? "transform" : "fixed",
+      });
+
+      ScrollTrigger.defaults({ scroller: document.body });
 
       const tickerCallback = (time: number) => {
         lenis.raf(time * 1000);
@@ -62,8 +93,10 @@ export function useLenis(): UseLenisReturn {
 
       cleanup = () => {
         gsap.ticker.remove(tickerCallback);
+        ScrollTrigger.scrollerProxy(document.body, {});
         lenis.destroy();
         lenisRef.current = null;
+        delete (window as Window & { __lenis?: Lenis }).__lenis;
         setIsReady(false);
         setIsSmooth(false);
       };
