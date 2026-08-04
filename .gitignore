@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local AI editor rules (do not publish)
+AGENTS.md
+CLAUDE.md
+.cursor/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
