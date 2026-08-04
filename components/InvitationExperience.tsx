@@ -1,21 +1,29 @@
 "use client";
 
 import { InvitationProvider, useInvitationOpened } from "@/hooks/useInvitationOpened";
+import { BackgroundMusicProvider, useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { ScrollLockEffect } from "@/components/providers/ScrollLockEffect";
 import { HeroScrollMountSync } from "@/components/providers/HeroScrollMountSync";
 import { GaneshaOpener } from "@/components/animations/GaneshaOpener";
 import { Hero } from "@/components/sections/Hero";
+import { MusicToggle } from "@/components/ui/MusicToggle";
 import { cn } from "@/lib/utils";
 
 function InvitationShell({ children }: { children: React.ReactNode }) {
   const { loaderComplete, completeLoader, skipLoader } = useInvitationOpened();
+  const { play } = useBackgroundMusic();
+
+  const handleOpenInvitation = () => {
+    completeLoader();
+    void play();
+  };
 
   return (
     <>
       <ScrollLockEffect />
       <HeroScrollMountSync />
       {!skipLoader && !loaderComplete ? (
-        <GaneshaOpener onComplete={completeLoader} />
+        <GaneshaOpener onComplete={handleOpenInvitation} />
       ) : null}
       {loaderComplete ? (
         <>
@@ -29,6 +37,7 @@ function InvitationShell({ children }: { children: React.ReactNode }) {
           >
             {children}
           </main>
+          <MusicToggle />
         </>
       ) : null}
     </>
@@ -38,7 +47,9 @@ function InvitationShell({ children }: { children: React.ReactNode }) {
 export function InvitationExperience({ children }: { children: React.ReactNode }) {
   return (
     <InvitationProvider>
-      <InvitationShell>{children}</InvitationShell>
+      <BackgroundMusicProvider>
+        <InvitationShell>{children}</InvitationShell>
+      </BackgroundMusicProvider>
     </InvitationProvider>
   );
 }

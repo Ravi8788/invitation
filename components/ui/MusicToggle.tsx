@@ -1,55 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Music2, VolumeX } from "lucide-react";
+import { WEDDING } from "@/lib/constants";
+import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { cn } from "@/lib/utils";
 
 export function MusicToggle() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { ui } = WEDDING;
+  const { isPlaying, hasSource, toggle } = useBackgroundMusic();
 
-  const getAudio = () => {
-    if (!audioRef.current) {
-      const audio = new Audio("/audio/bg-music.mp3");
-      audio.loop = true;
-      audio.volume = 0.35;
-      audio.preload = "none";
-      audioRef.current = audio;
-    }
-    return audioRef.current;
-  };
-
-  const toggle = async () => {
-    const audio = getAudio();
-
-    try {
-      if (isPlaying) {
-        audio.pause();
-        setIsPlaying(false);
-      } else {
-        await audio.play();
-        setIsPlaying(true);
-      }
-    } catch {
-      setIsPlaying(false);
-    }
-  };
+  if (!hasSource) return null;
 
   return (
     <motion.button
       type="button"
-      onClick={toggle}
+      onClick={() => void toggle()}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 1.2, duration: 0.5 }}
+      transition={{ delay: 0.6, duration: 0.45 }}
       className={cn(
-        "fixed bottom-6 left-6 z-[90] flex h-11 w-11 items-center justify-center rounded-full",
-        "border border-primary/30 bg-twilight/85 text-gold-light shadow-lg backdrop-blur-md",
-        "transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        "fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-[max(1.25rem,env(safe-area-inset-left))] z-[90]",
+        "flex h-11 w-11 items-center justify-center rounded-full",
+        "border border-gold/40 bg-onyx-dark/90 text-reel-gold-light shadow-lg backdrop-blur-sm",
+        "transition-colors hover:border-gold/60 hover:bg-onyx-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40",
+        !isPlaying && "animate-[pulse_2.4s_ease-in-out_infinite]",
       )}
-      aria-label={isPlaying ? "Mute background music" : "Play background music"}
-      title={isPlaying ? "Mute music" : "Play music"}
+      aria-label={isPlaying ? ui.music.pauseLabel : ui.music.playLabel}
+      title={isPlaying ? ui.music.pauseLabel : ui.music.playLabel}
     >
       {isPlaying ? (
         <Music2 className="h-4 w-4" strokeWidth={1.5} />

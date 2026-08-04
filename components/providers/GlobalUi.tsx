@@ -7,15 +7,7 @@ const CursorGlow = dynamic(
     import("@/components/ui/CursorGlow").then((mod) => ({
       default: mod.CursorGlow,
     })),
-  { ssr: false }
-);
-
-const MusicToggle = dynamic(
-  () =>
-    import("@/components/ui/MusicToggle").then((mod) => ({
-      default: mod.MusicToggle,
-    })),
-  { ssr: false }
+  { ssr: false },
 );
 
 interface GlobalUiProps {
@@ -27,7 +19,6 @@ export function GlobalUi({ children }: GlobalUiProps) {
     <>
       {children}
       <CursorGlow />
-      <MusicToggle />
     </>
   );
 }

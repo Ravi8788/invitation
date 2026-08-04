@@ -213,6 +213,10 @@ export interface UiStrings {
   quotes: {
     title: string;
   };
+  music: {
+    playLabel: string;
+    pauseLabel: string;
+  };
   footer: {
     developer: string;
     madeFor: string;

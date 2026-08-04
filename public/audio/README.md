@@ -1,5 +1,22 @@
 # Background music
 
-Place your wedding background track here as `bg-music.mp3`.
+The site plays **`bg-music.mp3`** from this folder (currently your custom wedding track).
 
-The floating music toggle in the bottom-left corner loads this file on user interaction (muted by default until clicked).
+To replace the music, overwrite:
+
+```
+public/audio/bg-music.mp3
+```
+
+Supported formats: MP3, MPEG, M4A (use `.mp3` filename for simplest setup).
+
+## Extract from hero video (optional)
+
+```bash
+npm run extract-bg-music
+```
+
+## On the site
+
+- Music starts when the guest taps **निमंत्रण उघडा**
+- Gold speaker button (bottom-left) to pause or resume

@@ -214,6 +214,10 @@ export const WEDDING: WeddingConfig = {
     quotes: {
       title: "शुभेच्छा",
     },
+    music: {
+      playLabel: "संगीत चालू करा",
+      pauseLabel: "संगीत बंद करा",
+    },
     footer: {
       developer: "Developed by Shris Innovations Pvt Ltd",
       madeFor: "शर्मा आणि पाटील कुटुंबासाठी प्रेमाने तयार",
