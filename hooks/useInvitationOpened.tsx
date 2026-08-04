@@ -20,15 +20,15 @@ interface InvitationContextValue {
   dismissConfetti: () => void;
 }
 
-export const InvitationContext = createContext<InvitationContextValue | null>(
-  null
-);
+export const InvitationContext = createContext<InvitationContextValue | null>(null);
 
 export function InvitationProvider({ children }: { children: ReactNode }) {
-  const [isOpened, setIsOpened] = useState(true);
+  const [isOpened, setIsOpened] = useState(false);
+  const [loaderComplete, setLoaderComplete] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
   const completeLoader = useCallback(() => {
+    setLoaderComplete(true);
     setIsOpened(true);
   }, []);
 
@@ -44,30 +44,24 @@ export function InvitationProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       isOpened,
-      isScrollLocked: false,
-      loaderComplete: true,
-      skipLoader: true,
+      isScrollLocked: !loaderComplete,
+      loaderComplete,
+      skipLoader: false,
       showConfetti,
       openInvitation,
       completeLoader,
       dismissConfetti,
     }),
-    [isOpened, showConfetti, openInvitation, completeLoader, dismissConfetti]
+    [isOpened, loaderComplete, showConfetti, openInvitation, completeLoader, dismissConfetti],
   );
 
-  return (
-    <InvitationContext.Provider value={value}>
-      {children}
-    </InvitationContext.Provider>
-  );
+  return <InvitationContext.Provider value={value}>{children}</InvitationContext.Provider>;
 }
 
 export function useInvitationOpened(): InvitationContextValue {
   const context = useContext(InvitationContext);
   if (!context) {
-    throw new Error(
-      "useInvitationOpened must be used within InvitationProvider"
-    );
+    throw new Error("useInvitationOpened must be used within InvitationProvider");
   }
   return context;
 }

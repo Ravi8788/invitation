@@ -1,2 +1,2 @@
-/** Hero scroll-scrub background */
-export const HERO_VIDEO = "/videos/background.mp4" as const;
+/** Hero scroll-scrub source — extracted from final.mp4 (client reference reel) */
+export const HERO_VIDEO = "/videos/final.mp4" as const;

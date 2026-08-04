@@ -2,219 +2,208 @@
 
 import { memo } from "react";
 import { useReducedMotion } from "framer-motion";
-import { Mouse } from "lucide-react";
 import { WEDDING } from "@/lib/constants";
-import { HERO_STORY_SCENES } from "@/lib/heroStoryScenes";
 import { scrollToSection } from "@/lib/scrollToSection";
-import { cn } from "@/lib/utils";
+import { GaneshaIcon } from "@/components/ui/GaneshaIcon";
 
-function SplitLetters({ text }: { text: string }) {
-  return (
-    <span aria-label={text}>
-      {text.split("").map((char, i) => (
-        <span key={`${char}-${i}`} className="hero-letter inline-block" aria-hidden>
-          {char === " " ? "\u00A0" : char}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-function SceneLines({ lines }: { lines: readonly string[] }) {
-  return (
-    <div className="space-y-1 sm:space-y-1.5">
-      {lines.map((line) => (
-        <p key={line} data-scene-line className="hero-scene-subtitle font-body text-sm sm:text-base">
-          {line}
-        </p>
-      ))}
-    </div>
-  );
-}
-
-function HeroParticles() {
-  const dots = [
-    { top: "18%", left: "14%", delay: "0s" },
-    { top: "28%", left: "78%", delay: "0.6s" },
-    { top: "62%", left: "22%", delay: "1.1s" },
-    { top: "48%", left: "68%", delay: "0.3s" },
-  ];
-  return (
-    <div data-hero-particles className="hero-particles pointer-events-none absolute inset-0 z-[1]" aria-hidden>
-      {dots.map((d, i) => (
-        <span
-          key={i}
-          className="hero-particle absolute h-1 w-1 rounded-full bg-[#d4af37]"
-          style={{ top: d.top, left: d.left, animationDelay: d.delay }}
-        />
-      ))}
-    </div>
-  );
-}
-
-const SceneShell = memo(function SceneShell({ id, children }: { id: string; children: React.ReactNode }) {
+const SceneShell = memo(function SceneShell({
+  id,
+  children,
+  pointerEvents,
+  backdrop,
+}: {
+  id: string;
+  children: React.ReactNode;
+  pointerEvents?: boolean;
+  backdrop?: boolean;
+}) {
   return (
     <div
       data-hero-scene={id}
-      className="hero-scene pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-4 pt-[calc(4rem+env(safe-area-inset-top))] pb-[max(4rem,env(safe-area-inset-bottom))] sm:px-8"
+      className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-4 pt-[calc(3rem+env(safe-area-inset-top))] pb-[max(5.5rem,env(safe-area-inset-bottom))] sm:px-6"
+      style={{ pointerEvents: pointerEvents ? "auto" : undefined }}
     >
-      <div className="hero-scene-inner">{children}</div>
+      <div
+        className={
+          backdrop
+            ? "hero-scene-inner hero-reel-text-backdrop w-full max-w-4xl"
+            : "hero-scene-inner w-full max-w-4xl"
+        }
+      >
+        {children}
+      </div>
     </div>
   );
 });
 
-const HeroScene = memo(function HeroScene({ scene }: { scene: (typeof HERO_STORY_SCENES)[number] }) {
-  if ("isCouple" in scene && scene.isCouple) {
-    return (
-      <SceneShell id={scene.id}>
-        <div data-scene-shimmer className="hero-couple-shimmer pointer-events-none absolute inset-0 opacity-0" aria-hidden />
-        <div className="relative text-center">
-          <p data-scene-bride className="font-script text-[clamp(2.75rem,11vw,4.5rem)] leading-none text-[#fdfbf7]">
-            {scene.bride}
-          </p>
-          <p
-            data-scene-with
-            className="font-display my-2 text-[10px] uppercase tracking-[0.45em] text-[#d4af37] sm:text-[11px]"
-          >
-            with
-          </p>
-          <p data-scene-groom className="font-script text-[clamp(2.75rem,11vw,4.5rem)] leading-none text-[#fdfbf7]">
-            {scene.groom}
-          </p>
-          <div className="mt-6">
-            <SceneLines lines={scene.subtitleLines} />
-          </div>
-        </div>
-      </SceneShell>
-    );
-  }
-
-  if ("isSaveDate" in scene && scene.isSaveDate) {
-    return (
-      <SceneShell id={scene.id}>
-        <div className="text-center">
-          <h2 data-scene-heading className="hero-scene-heading font-display text-[clamp(1.25rem,5vw,2rem)] font-semibold uppercase tracking-[0.12em] text-[#fdfbf7]">
-            {scene.heading}
-          </h2>
-          <p
-            data-scene-date
-            className="hero-scene-date font-display mt-5 text-[clamp(1.35rem,5.5vw,2.35rem)] font-semibold tracking-[0.06em] text-[#d4af37] sm:mt-6 [perspective:800px]"
-          >
-            {scene.date}
-          </p>
-          <div
-            data-scene-divider
-            className="mx-auto mt-4 h-px w-24 origin-center bg-gradient-to-r from-transparent via-[#d4af37] to-transparent sm:mt-5 sm:w-32"
-          />
-          <p
-            data-scene-time
-            className="font-body mt-4 text-xs uppercase tracking-[0.28em] text-[#fdfbf7]/90 sm:text-sm"
-          >
-            {scene.time}
-          </p>
-        </div>
-      </SceneShell>
-    );
-  }
-
-  if ("isVenue" in scene && scene.isVenue) {
-    return (
-      <SceneShell id={scene.id}>
-        <div className="text-center">
-          <h2 data-scene-heading className="hero-scene-heading font-display text-[clamp(1.25rem,5vw,2rem)] font-semibold uppercase tracking-[0.12em] text-[#fdfbf7]">
-            {scene.heading}
-          </h2>
-          <p
-            data-scene-venue-name
-            className="font-display mt-5 text-xl text-[#d4af37] sm:mt-6 sm:text-2xl"
-          >
-            {scene.venueName}
-          </p>
-          <p data-scene-venue-city className="font-body mt-2 text-base text-[#fdfbf7]/85 sm:text-lg">
-            {scene.venueCity}
-          </p>
-          <button
-            type="button"
-            data-scene-cta
-            onClick={() => scrollToSection("#save-the-date")}
-            className="hero-cta btn-gold-cinematic pointer-events-auto relative mt-8 min-h-11 px-8 py-2.5 text-[10px] uppercase tracking-[0.22em] sm:text-[11px]"
-          >
-            {scene.cta}
-          </button>
-        </div>
-      </SceneShell>
-    );
-  }
-
-  if ("isFinale" in scene && scene.isFinale) {
-    return (
-      <SceneShell id={scene.id}>
-        <div className="max-w-lg text-center">
-          <h2 data-scene-heading className="hero-scene-heading font-display text-[clamp(1.15rem,4.5vw,1.85rem)] font-semibold uppercase leading-snug tracking-[0.1em] text-[#fdfbf7]">
-            {scene.heading}
-          </h2>
-          <div className="mt-5">
-            <SceneLines lines={scene.subtitleLines} />
-          </div>
-          <button
-            type="button"
-            data-scene-cta
-            onClick={() => scrollToSection("#save-the-date")}
-            className="hero-cta btn-gold-cinematic pointer-events-auto relative mt-8 min-h-11 w-full max-w-xs px-8 py-2.5 text-[10px] uppercase tracking-[0.22em] sm:w-auto sm:text-[11px]"
-          >
-            {scene.cta}
-          </button>
-        </div>
-      </SceneShell>
-    );
-  }
-
-  if ("subtitleLines" in scene && scene.subtitleLines && "heading" in scene) {
-    return (
-      <SceneShell id={scene.id}>
-        <div className="text-center">
-          <h2 data-scene-heading className="hero-scene-heading font-display text-[clamp(1.15rem,4.8vw,2rem)] font-semibold uppercase leading-snug tracking-[0.1em] text-[#fdfbf7]">
-            {scene.heading}
-          </h2>
-          {"id" in scene && scene.id === "2" ? (
-            <div
-              data-scene-divider
-              className="mx-auto mt-4 h-px w-20 origin-center bg-gradient-to-r from-transparent via-[#d4af37] to-transparent sm:w-28"
-            />
-          ) : null}
-          <div className="mt-5">
-            <SceneLines lines={scene.subtitleLines} />
-          </div>
-        </div>
-      </SceneShell>
-    );
-  }
-
-  const s = scene as { id: string; eyebrow?: string; heading: string; subtitle: string };
+function HeroIntroLayer() {
+  const { couple, hero, ui } = WEDDING;
   return (
-    <SceneShell id={s.id}>
-      <div className="text-center">
-        {s.eyebrow ? (
+    <SceneShell id="1" backdrop>
+      <div className="flex flex-col items-center text-center">
+        <GaneshaIcon className="mb-3 h-28 w-28 sm:mb-5 sm:h-32 sm:w-32 md:h-36 md:w-36" />
+        <span
+          data-scene-el
+          className="hero-reel-gold font-sans mb-3 text-xs tracking-[0.3em] uppercase sm:mb-4 sm:text-sm"
+        >
+          || {ui.opener.ganeshaMantra} ||
+        </span>
+        {hero.sanskrit ? (
           <p
-            data-scene-eyebrow
-            className="font-display text-[9px] uppercase tracking-[0.38em] text-[#d4af37] sm:text-[10px] sm:tracking-[0.42em]"
+            data-scene-el
+            className="hero-reel-tagline font-serif mb-5 max-w-xl text-sm leading-relaxed tracking-wider sm:mb-8 sm:text-base md:text-lg"
           >
-            ◆&nbsp;{s.eyebrow}&nbsp;◆
+            {hero.sanskrit}
           </p>
         ) : null}
-        <h2
-          data-scene-heading-wrap
-          className="hero-scene-heading mt-4 font-display text-[clamp(1.25rem,5vw,2.1rem)] font-semibold uppercase leading-snug tracking-[0.1em] text-[#fdfbf7] sm:mt-5"
+        <span
+          data-scene-el
+          className="hero-reel-muted font-sans mb-3 max-w-2xl px-2 text-center text-[10px] leading-relaxed tracking-[0.2em] uppercase sm:mb-4 sm:text-xs sm:tracking-[0.28em] md:text-sm"
         >
-          <SplitLetters text={s.heading} />
-        </h2>
-        <p data-scene-subtitle className={cn("hero-scene-subtitle font-body mt-5 text-sm sm:text-base")}>
-          {s.subtitle}
+          {hero.eyebrow}
+        </span>
+        <h1
+          data-scene-el
+          className="hero-reel-heading font-display mb-3 flex w-full flex-col items-center justify-center text-[clamp(2rem,9vw,5rem)] font-semibold leading-none tracking-[0.12em] uppercase sm:mb-5 sm:flex-row md:text-7xl lg:text-8xl"
+        >
+          <span>{couple.bride}</span>
+          <span className="hero-reel-accent font-serif px-2 py-1 text-[clamp(1.5rem,6vw,4rem)] font-normal italic sm:px-3 md:px-4">
+            &
+          </span>
+          <span>{couple.groom}</span>
+        </h1>
+        <div data-scene-el className="mb-4 h-px w-20 bg-[var(--color-reel-gold)]/50 sm:mb-6 sm:w-24" />
+        <p
+          data-scene-el
+          className="hero-reel-tagline font-serif max-w-2xl px-2 text-sm tracking-wide italic sm:text-lg md:text-2xl"
+        >
+          {hero.tagline}
         </p>
       </div>
     </SceneShell>
   );
-});
+}
+
+function HeroTraditionLayer() {
+  const { ui } = WEDDING;
+  const layer = ui.heroLayers.tradition;
+  return (
+    <SceneShell id="2" backdrop>
+      <div className="flex flex-col items-center px-2 text-center">
+        <h2
+          data-scene-heading
+          className="hero-reel-heading font-display text-[clamp(1.65rem,6vw,3.75rem)] font-semibold leading-tight tracking-wide uppercase"
+        >
+          {layer.titlePrefix}{" "}
+          <span className="hero-reel-accent font-serif italic">{layer.titleAccent}</span>
+        </h2>
+        <p
+          data-scene-line
+          className="hero-reel-muted font-sans mt-6 max-w-3xl text-sm leading-loose tracking-wider sm:mt-8 sm:text-lg md:text-xl"
+        >
+          {layer.body}
+        </p>
+        <p
+          data-scene-tagline
+          className="hero-reel-gold font-serif mt-6 text-base tracking-[0.2em] uppercase sm:mt-8 sm:text-2xl md:text-3xl"
+        >
+          {layer.tagline}
+        </p>
+      </div>
+    </SceneShell>
+  );
+}
+
+function HeroMuhuratLayer() {
+  const { weddingDate, venue, ui, events } = WEDDING;
+  const layer = ui.heroLayers.muhurat;
+  const event = events[0];
+
+  return (
+    <SceneShell id="3" backdrop>
+      <div className="flex flex-col items-center text-center">
+        <span
+          data-scene-eyebrow
+          className="hero-reel-gold font-sans mb-3 text-xs font-semibold tracking-[0.4em] uppercase sm:mb-4 sm:text-sm"
+        >
+          {layer.eyebrow}
+        </span>
+        <h2
+          data-scene-heading
+          className="hero-reel-heading font-display mb-6 text-[clamp(1.5rem,5.5vw,3.25rem)] font-semibold leading-snug tracking-wide uppercase sm:mb-10 md:text-5xl"
+        >
+          {weddingDate.date}
+        </h2>
+
+        <div className="mx-auto mb-6 grid w-full max-w-sm grid-cols-1 gap-3 sm:mb-10">
+          <div
+            data-scene-schedule
+            className="flex flex-col items-center justify-center rounded-2xl border border-reel-gold bg-black/55 p-4 text-center shadow-lg backdrop-blur-md sm:p-6"
+          >
+            <span className="hero-reel-gold mb-1 block text-[9px] font-semibold tracking-widest uppercase sm:text-xs">
+              {event.name}
+            </span>
+            <span className="hero-reel-white text-xs font-bold whitespace-nowrap sm:text-lg md:text-xl">
+              {event.time}
+            </span>
+          </div>
+        </div>
+
+        <div data-scene-venue-block className="font-sans text-sm tracking-wider sm:text-base">
+          <span className="hero-reel-gold mb-1 block text-xs font-semibold tracking-widest uppercase sm:text-sm">
+            {layer.venueLabel}
+          </span>
+          <span className="hero-reel-white mt-1 text-base font-bold uppercase sm:text-xl md:text-2xl">
+            {venue.name}
+          </span>
+          <span className="hero-reel-gold mt-2 block text-xs sm:text-sm">{venue.city}</span>
+        </div>
+      </div>
+    </SceneShell>
+  );
+}
+
+function HeroCelebrationLayer() {
+  const { ui } = WEDDING;
+  const layer = ui.heroLayers.celebration;
+  return (
+    <SceneShell id="4" pointerEvents>
+      <div className="flex w-full justify-center px-1">
+        <div
+          data-scene-card
+          className="w-full max-w-xl rounded-3xl border border-reel-gold bg-black/75 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-md sm:p-10 md:p-12"
+        >
+          <span
+            data-scene-el
+            className="hero-reel-gold font-sans mb-3 block text-[11px] font-semibold tracking-[0.4em] uppercase sm:text-xs"
+          >
+            {layer.eyebrow}
+          </span>
+          <h3
+            data-scene-el
+            className="hero-reel-heading font-display mb-4 text-2xl font-semibold tracking-wider uppercase sm:mb-6 sm:text-3xl md:text-4xl"
+          >
+            {layer.title}
+          </h3>
+          <p
+            data-scene-el
+            className="hero-reel-muted font-sans mb-6 text-xs leading-relaxed tracking-wider sm:mb-8 sm:text-sm"
+          >
+            {layer.body}
+          </p>
+          <button
+            type="button"
+            data-scene-el
+            onClick={() => scrollToSection("#countdown")}
+            className="reel-open-btn pointer-events-auto w-full py-4 text-xs font-bold tracking-[0.2em] uppercase sm:py-5 sm:text-sm"
+          >
+            {layer.cta}
+          </button>
+        </div>
+      </div>
+    </SceneShell>
+  );
+}
 
 const HeroScrollHint = memo(function HeroScrollHint() {
   const reduced = useReducedMotion();
@@ -223,53 +212,25 @@ const HeroScrollHint = memo(function HeroScrollHint() {
   return (
     <div
       data-story-hint="true"
-      className="pointer-events-none absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-30 -translate-x-1/2"
+      className="pointer-events-none absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-10"
     >
-      <div className="hero-scroll-hint-bob flex flex-col items-center gap-1 text-[#fdfbf7]/50">
-        <span className="font-body text-[7px] uppercase tracking-[0.3em] sm:text-[8px]">
-          {WEDDING.hero.scrollHint ?? "Scroll to begin"}
-        </span>
-        <Mouse className="h-3 w-3" strokeWidth={1.5} />
-      </div>
-    </div>
-  );
-});
-
-const ReducedHero = memo(function ReducedHero() {
-  const finale = HERO_STORY_SCENES[6];
-  return (
-    <div className="flex h-full items-center justify-center px-4 pt-16">
-      <div className="hero-scene-inner max-w-lg text-center">
-        <h1 className="font-display text-xl font-semibold uppercase tracking-[0.1em] text-[#fdfbf7] sm:text-2xl">
-          {finale.heading}
-        </h1>
-        <button
-          type="button"
-          onClick={() => scrollToSection("#save-the-date")}
-          className="btn-gold-cinematic mt-8 min-h-11 px-8 py-2.5 text-[10px] uppercase tracking-[0.22em]"
-        >
-          {finale.cta}
-        </button>
+      <span className="hero-reel-muted font-sans text-[9px] tracking-[0.3em] uppercase">
+        {WEDDING.ui.opener.scrollHint}
+      </span>
+      <div className="relative flex h-8 w-5 justify-center rounded-full border border-white/40 p-1">
+        <div className="h-2 w-1 animate-bounce rounded-full bg-[#d4af37]" />
       </div>
     </div>
   );
 });
 
 export const HeroStoryOverlays = memo(function HeroStoryOverlays() {
-  const reduced = useReducedMotion();
-  if (reduced) return <ReducedHero />;
-
   return (
     <div data-hero-story-root className="relative h-full w-full overflow-hidden">
-      <div
-        data-hero-glow
-        className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[min(70vw,420px)] w-[min(70vw,420px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.22)_0%,transparent_68%)] blur-2xl"
-        aria-hidden
-      />
-      <HeroParticles />
-      {HERO_STORY_SCENES.map((scene) => (
-        <HeroScene key={scene.id} scene={scene} />
-      ))}
+      <HeroIntroLayer />
+      <HeroTraditionLayer />
+      <HeroMuhuratLayer />
+      <HeroCelebrationLayer />
       <HeroScrollHint />
     </div>
   );

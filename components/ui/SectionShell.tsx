@@ -3,7 +3,7 @@ import { forwardRef, type ReactNode } from "react";
 
 interface SectionShellProps {
   id?: string;
-  theme?: "maroon" | "ivory" | "warm" | "cinematic";
+  theme?: "maroon" | "ivory" | "warm" | "cinematic" | "reel";
   /** Full-viewport cinematic section */
   cinematic?: boolean;
   /** Ambient layer (embers, radial glow) — rendered full-bleed behind content */
@@ -30,6 +30,7 @@ export const SectionShell = forwardRef<HTMLElement, SectionShellProps>(
     ref
   ) {
     const isCinematic = theme === "cinematic";
+    const isReel = theme === "reel";
 
     return (
       <section
@@ -37,7 +38,15 @@ export const SectionShell = forwardRef<HTMLElement, SectionShellProps>(
         id={id}
         className={cn(
           "relative w-full overflow-hidden",
-          isCinematic ? "section-cinematic" : theme === "maroon" ? "section-maroon" : theme === "warm" ? "section-warm" : "section-ivory",
+          isReel
+            ? "section-reel-dark"
+            : isCinematic
+              ? "section-cinematic"
+              : theme === "maroon"
+                ? "section-maroon"
+                : theme === "warm"
+                  ? "section-warm"
+                  : "section-ivory",
           cinematic && "flex min-h-[100dvh] min-h-[100svh] flex-col justify-center",
           !cinematic &&
             "px-[max(1rem,env(safe-area-inset-left))] py-16 sm:px-6 sm:py-24 md:py-28",

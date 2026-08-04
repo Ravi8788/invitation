@@ -46,8 +46,8 @@ export function CinematicHeading({
 
       <motion.h2
         id={titleId}
-        className="font-display text-[clamp(1.5rem,5.5vw,2.75rem)] font-semibold uppercase tracking-[0.1em] text-ivory sm:tracking-[0.14em] md:text-4xl lg:text-5xl"
-        style={{ textShadow: "0 0 40px rgba(212,180,131,0.25)" }}
+        className="font-display text-[clamp(1.5rem,5.5vw,2.75rem)] font-semibold tracking-[0.06em] sm:tracking-[0.08em] md:text-4xl lg:text-5xl"
+        style={{ textShadow: "0 0 40px rgba(212,180,131,0.2)" }}
         initial={{ opacity: 0, y: reduced ? 0 : 20, filter: reduced ? "none" : "blur(4px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true, margin: "-60px" }}

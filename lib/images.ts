@@ -1,2 +1,5 @@
-/** Local image assets — add paths here when you have your own photos. */
-export const PRELOAD_IMAGES = [] as const;
+/** Local image assets */
+export const GANESHA_IMAGE = "/images/ganesha.png" as const;
+export const FOOTER_GANESHA_IMAGE = "/images/footer-ganesha.png" as const;
+
+export const PRELOAD_IMAGES = [GANESHA_IMAGE] as const;

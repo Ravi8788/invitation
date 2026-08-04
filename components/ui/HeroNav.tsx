@@ -1,70 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { WEDDING } from "@/lib/constants";
 import { scrollToSection } from "@/lib/scrollToSection";
+import { cn } from "@/lib/utils";
+
+const { ui } = WEDDING;
 
 const NAV_ITEMS = [
-  { label: "Home", href: "#hero", short: "Home" },
-  { label: "Save the Date", href: "#save-the-date", short: "Date" },
-  { label: "Our Journey", href: "#our-story", short: "Story" },
-  { label: "Countdown", href: "#countdown", short: "Timer" },
-  { label: "Ceremony", href: "#ceremony", short: "Vows" },
-  { label: "Venue", href: "#venue", short: "Venue" },
-  { label: "Blessings", href: "#blessings", short: "Bless" },
+  { label: ui.nav.home, href: "#hero" },
+  { label: ui.nav.date, href: "#countdown" },
+  { label: ui.nav.venue, href: "#venue" },
+  { label: ui.nav.family, href: "#family" },
 ] as const;
 
 export function HeroNav() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <nav
       className={cn(
-        "fixed inset-x-0 top-0 z-[80] pt-[env(safe-area-inset-top,0px)] transition-all duration-300",
-        scrolled
-          ? "border-b border-[#d4b483]/20 bg-[#0f1529]/88 py-2 shadow-lg shadow-black/25 backdrop-blur-md sm:py-3"
-          : "bg-gradient-to-b from-[#0f1529]/55 via-[#0f1529]/20 to-transparent py-2.5 sm:py-4",
+        "fixed inset-x-0 top-0 z-[80] pt-[env(safe-area-inset-top,0px)]",
+        "bg-gradient-to-b from-[#0a0a0a]/90 via-[#0a0a0a]/50 to-transparent py-2.5 sm:py-4",
       )}
-      aria-label="Main navigation"
+      aria-label="मुख्य नेव्हिगेशन"
     >
       <div className="mx-auto max-w-6xl px-3 sm:px-4">
-        <div className="nav-scroll overflow-x-auto pb-0.5 sm:overflow-visible sm:pb-0">
-          <ul className="flex w-max min-w-full items-center justify-start gap-0.5 sm:w-auto sm:min-w-0 sm:flex-wrap sm:justify-center sm:gap-x-1">
-            {NAV_ITEMS.map((item, index) => (
-              <li key={item.href} className="flex shrink-0 items-center">
-                {index > 0 ? (
-                  <span className="mx-0.5 hidden text-[#d4b483]/45 sm:mx-1 sm:inline" aria-hidden="true">
-                    ·
-                  </span>
-                ) : null}
-                <a
-                  href={item.href}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    scrollToSection(item.href);
-                  }}
-                  className={cn(
-                    "inline-flex min-h-11 min-w-[2.75rem] items-center justify-center rounded-full px-2",
-                    "font-body text-[8px] uppercase tracking-[0.12em] transition-colors sm:px-2.5 sm:text-[11px] sm:tracking-[0.18em]",
-                    scrolled
-                      ? "text-[#fdfbf7]/65 hover:text-[#d4b483] active:text-[#d4b483]"
-                      : "hero-text-shadow text-[#fdfbf7]/75 hover:text-[#d4b483] active:text-[#d4b483]",
-                  )}
-                >
-                  <span className="sm:hidden">{item.short}</span>
-                  <span className="hidden sm:inline">{item.label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:gap-x-4">
+          {NAV_ITEMS.map((item) => (
+            <li key={item.href}>
+              <a
+                href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(item.href);
+                }}
+                className="inline-flex min-h-11 items-center px-2 font-body text-[9px] tracking-wide text-[#fff]/70 transition-colors hover:text-[#D4AF37] sm:text-[11px]"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
   );

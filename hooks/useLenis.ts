@@ -5,6 +5,7 @@ import type Lenis from "lenis";
 import { MOBILE_BREAKPOINT } from "@/lib/motion";
 import { isTouchDevice } from "@/lib/isTouchDevice";
 import { prefersReducedMotion } from "@/lib/utils";
+import { getLenisScroller, syncScrollLayout } from "@/lib/scrollSync";
 
 export interface UseLenisReturn {
   lenisRef: React.RefObject<Lenis | null>;
@@ -51,7 +52,7 @@ export function useLenis(): UseLenisReturn {
       gsap.registerPlugin(ScrollTrigger);
 
       const lenis = new LenisCtor({
-        lerp: 0.14,
+        lerp: 0.1,
         smoothWheel: true,
         autoRaf: false,
       });
@@ -61,9 +62,11 @@ export function useLenis(): UseLenisReturn {
       setIsSmooth(true);
       setIsReady(true);
 
+      const scroller = getLenisScroller();
+
       lenis.on("scroll", ScrollTrigger.update);
 
-      ScrollTrigger.scrollerProxy(document.body, {
+      ScrollTrigger.scrollerProxy(scroller, {
         scrollTop(value) {
           if (arguments.length && value !== undefined) {
             lenis.scrollTo(value, { immediate: true });
@@ -78,10 +81,10 @@ export function useLenis(): UseLenisReturn {
             height: window.innerHeight,
           };
         },
-        pinType: document.body.style.transform ? "transform" : "fixed",
+        pinType: document.documentElement.style.transform ? "transform" : "fixed",
       });
 
-      ScrollTrigger.defaults({ scroller: document.body });
+      ScrollTrigger.defaults({ scroller });
 
       const tickerCallback = (time: number) => {
         lenis.raf(time * 1000);
@@ -89,11 +92,12 @@ export function useLenis(): UseLenisReturn {
 
       gsap.ticker.add(tickerCallback);
       gsap.ticker.lagSmoothing(0);
-      ScrollTrigger.refresh();
+      syncScrollLayout(lenis);
 
       cleanup = () => {
         gsap.ticker.remove(tickerCallback);
-        ScrollTrigger.scrollerProxy(document.body, {});
+        ScrollTrigger.scrollerProxy(scroller, {});
+        ScrollTrigger.defaults({ scroller: window });
         lenis.destroy();
         lenisRef.current = null;
         delete (window as Window & { __lenis?: Lenis }).__lenis;

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useInvitationOpened } from "@/hooks/useInvitationOpened";
 import { useLenisContext } from "@/hooks/useLenisContext";
+import { syncScrollLayout } from "@/lib/scrollSync";
 
 /** Stops Lenis + native scroll while the invitation is locked. */
 export function ScrollLockEffect() {
@@ -23,6 +24,9 @@ export function ScrollLockEffect() {
       root.classList.remove("invitation-locked");
       document.body.style.overflow = "";
       lenis?.start();
+      syncScrollLayout(lenis);
+      setTimeout(() => syncScrollLayout(lenis), 250);
+      setTimeout(() => syncScrollLayout(lenis), 800);
     }
 
     return () => {

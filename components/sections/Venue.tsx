@@ -1,55 +1,43 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { MapPin, Navigation } from "lucide-react";
 import { WEDDING } from "@/lib/constants";
 import { getMapsEmbedUrl } from "@/lib/maps";
-import { FadeIn } from "@/components/animations/FadeIn";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { SectionAtmosphere } from "@/components/ui/SectionAtmosphere";
-import { SectionShell } from "@/components/ui/SectionShell";
-import { cn } from "@/lib/utils";
+import { ReelSection, ReelSectionGrid } from "@/components/ui/ReelSection";
 
-function MapLoading() {
+function InfoRow({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
   return (
-    <div
-      className="flex aspect-[16/10] w-full items-center justify-center bg-twilight/40"
-      aria-hidden="true"
-    >
-      <div className="h-10 w-10 animate-pulse rounded-full border border-primary/30 bg-primary/10" />
+    <div className="flex items-start gap-4 text-left">
+      <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gold/10">
+        {icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <span className="mb-0.5 block text-[9px] text-white/40">{label}</span>
+        <span className="font-serif text-base leading-snug text-white/90">{value}</span>
+      </div>
     </div>
   );
 }
 
-function GoldLocationPin({ reduced }: { reduced: boolean }) {
-  return (
-    <motion.div
-      className="relative flex flex-col items-center"
-      animate={reduced ? { y: 0 } : { y: [0, -10, 0] }}
-      transition={{ duration: 1.8, repeat: reduced ? 0 : Infinity, ease: "easeInOut" }}
-      aria-hidden="true"
-    >
-      <MapPin
-        className="relative h-10 w-10 text-[#d4b483] drop-shadow-[0_4px_12px_rgba(212,180,131,0.45)]"
-        fill="#b8935a"
-        strokeWidth={1.5}
-      />
-    </motion.div>
-  );
-}
-
+/** Block 5 — The Venue (reference reel) */
 export function Venue() {
-  const { venue } = WEDDING;
-  const reduced = useReducedMotion();
+  const { venue, weddingDate, ui, events } = WEDDING;
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [mapVisible, setMapVisible] = useState(false);
   const embedUrl = getMapsEmbedUrl();
+  const scheduleLine = `${events[0]?.name ?? weddingDate.celebrationTitle} · ${weddingDate.time}`;
 
   useEffect(() => {
     const container = mapContainerRef.current;
     if (!container) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -57,77 +45,113 @@ export function Venue() {
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" }
+      { rootMargin: "200px" },
     );
-
     observer.observe(container);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <SectionShell
-      id="venue"
-      theme="cinematic"
-      atmosphere={<SectionAtmosphere embers={3} />}
-      contentClassName="max-w-3xl"
-      aria-labelledby="venue-heading"
+    <ReelSection
+      id="venue-section"
+      theme="venue"
+      eyebrow={ui.venue.eyebrow}
+      title={
+        <>
+          {ui.venue.titlePrefix}{" "}
+          <span className="font-serif text-reel-gold-accent italic normal-case">{ui.venue.titleAccent}</span>
+        </>
+      }
+      subtitle={ui.venue.subtitle}
+      innerClassName="max-w-6xl"
     >
-      <FadeIn className="mb-12 flex w-full justify-center">
-        <SectionHeading title="Venue" headingId="venue-heading" theme="cinematic" />
-      </FadeIn>
-
-      <FadeIn delay={0.1} className="w-full">
-        <div className="invitation-card overflow-hidden">
-          <div className="flex flex-col gap-4 border-b border-primary/15 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8">
-            <div className="min-w-0">
-              <p className="font-display text-xl text-ivory sm:text-2xl">{venue.name}</p>
-              <p className="font-body mt-1 text-sm text-ivory/55">
-                {venue.nearestLandmark} · {venue.city}
-              </p>
-            </div>
-
-            <motion.a
-              href={venue.directionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className={cn("btn-gold-cinematic shrink-0")}
-            >
-              <Navigation className="h-3.5 w-3.5" strokeWidth={2} />
-              Get Directions
-            </motion.a>
-          </div>
-
-          <div className="p-4 sm:p-5 md:p-6">
-            <div
-              ref={mapContainerRef}
-              className="relative overflow-hidden rounded-xl border border-primary/25"
-            >
-              {mapVisible ? (
-                <iframe
-                  title={`Map showing ${venue.name}, ${venue.city}`}
-                  src={embedUrl}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="aspect-[16/10] w-full border-0 grayscale-[12%] sepia-[10%] contrast-[1.04] saturate-[0.92]"
-                  allowFullScreen
-                />
-              ) : (
-                <MapLoading />
-              )}
-
-              <div className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-full">
-                <GoldLocationPin reduced={!!reduced} />
+      <ReelSectionGrid className="max-w-5xl items-stretch lg:grid-cols-2">
+        <div className="story-card flex h-full flex-col justify-between rounded-2xl border border-gold/15 bg-onyx-dark/50 p-8 backdrop-blur-sm transition-all duration-500 hover:border-gold/30 sm:p-10">
+          <div>
+            <div className="mb-6 flex items-center justify-center gap-3 sm:justify-start">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-gold/30 text-gold">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
+                </svg>
               </div>
+              <span className="hero-reel-gold font-sans text-[10px]">
+                {ui.venue.locationLabel}
+              </span>
             </div>
 
-            <p className="font-body mt-4 text-center text-xs leading-relaxed text-ivory/55 sm:text-sm">
+            <h3 className="font-display mb-2 text-center text-2xl text-white sm:text-left sm:text-3xl">
+              {venue.name}
+            </h3>
+            <p className="font-sans mb-8 text-center text-sm leading-relaxed text-white/60 sm:text-left">
               {venue.address}
             </p>
+
+            <div className="space-y-5">
+              <InfoRow
+                label={ui.venue.dateLabel}
+                value={weddingDate.date}
+                icon={
+                  <svg className="h-4 w-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                  </svg>
+                }
+              />
+              <InfoRow
+                label={ui.venue.scheduleLabel}
+                value={scheduleLine}
+                icon={
+                  <svg className="h-4 w-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                }
+              />
+              <InfoRow
+                label={ui.venue.parkingLabel}
+                value={ui.venue.parkingNote}
+                icon={
+                  <svg className="h-4 w-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0H21M3.375 14.25h17.25" />
+                  </svg>
+                }
+              />
+            </div>
           </div>
+
+          <a
+            href={venue.directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="reel-open-btn mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-[10px] font-semibold sm:text-xs"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+            {ui.venue.directions}
+          </a>
         </div>
-      </FadeIn>
-    </SectionShell>
+
+        <div
+          ref={mapContainerRef}
+          className="story-card relative min-h-[320px] overflow-hidden rounded-2xl border border-gold/15 sm:min-h-[400px] lg:min-h-full"
+        >
+          {mapVisible ? (
+            <iframe
+              title={`${venue.name}, ${venue.city}`}
+              src={embedUrl}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 h-full w-full border-0 opacity-80 contrast-125 grayscale transition-all duration-700 hover:opacity-100 hover:grayscale-0"
+              allowFullScreen
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-onyx-dark/80">
+              <div className="h-10 w-10 animate-pulse rounded-full border border-gold/30" />
+            </div>
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-onyx-dark/50 via-transparent to-onyx-dark/30" />
+        </div>
+      </ReelSectionGrid>
+    </ReelSection>
   );
 }

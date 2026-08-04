@@ -1,9 +1,11 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type Lenis from "lenis";
 import { buildHeroStoryTimeline, initHeroStoryElements } from "@/lib/heroStoryGsap";
 import { HERO_SCROLL_END } from "@/lib/heroStoryScenes";
 import { createHeroSceneController, getScrollScroller } from "@/lib/heroSceneVisibility";
 import { FrameSequenceScrubber } from "@/lib/frameSequenceScrubber";
+import { syncScrollLayout } from "@/lib/scrollSync";
 
 export interface HeroScrollEngineConfig {
   section: HTMLElement;
@@ -13,13 +15,13 @@ export interface HeroScrollEngineConfig {
   progressBar: HTMLElement | null;
   scrollHint: HTMLElement | null;
   scroller: HTMLElement | Window;
+  lenis?: Lenis | null;
   onReady: () => void;
   onCompleteChange?: (complete: boolean) => void;
 }
 
 /**
- * Single ScrollTrigger + master timeline + rAF-batched frame/visibility updates.
- * No React state on the scroll path.
+ * Pinned hero — final.mp4 frame scrub + GSAP text layers, synced to scroll.
  */
 export class HeroScrollEngine {
   private readonly config: HeroScrollEngineConfig;
@@ -33,14 +35,24 @@ export class HeroScrollEngine {
   private rafId = 0;
   private complete = false;
   private resizeObserver?: ResizeObserver;
+  private onResize?: () => void;
 
   constructor(config: HeroScrollEngineConfig) {
     this.config = config;
   }
 
   async init() {
-    const { section, stage, canvas, storyRoot, progressBar, scrollHint, scroller, onReady } =
-      this.config;
+    const {
+      section,
+      stage,
+      canvas,
+      storyRoot,
+      progressBar,
+      scrollHint,
+      scroller,
+      lenis,
+      onReady,
+    } = this.config;
 
     this.sceneController = createHeroSceneController(storyRoot);
     this.sceneController.hideAll();
@@ -57,12 +69,19 @@ export class HeroScrollEngine {
       ? (gsap.quickSetter(scrollHint, "opacity") as (value: number) => void)
       : null;
 
-    this.scrubber = await FrameSequenceScrubber.create(canvas);
-
     this.resizeObserver = new ResizeObserver(() => {
       this.scrubber?.resize();
+      syncScrollLayout(lenis);
     });
     this.resizeObserver.observe(stage);
+
+    this.onResize = () => {
+      this.scrubber?.resize();
+      syncScrollLayout(lenis);
+    };
+    window.addEventListener("resize", this.onResize);
+
+    syncScrollLayout(lenis);
 
     this.ctx = gsap.context(() => {
       this.scrollTrigger = ScrollTrigger.create({
@@ -74,7 +93,7 @@ export class HeroScrollEngine {
         scrub: 1,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        fastScrollEnd: true,
+        fastScrollEnd: false,
         scroller,
         animation: master,
         onUpdate: (self) => {
@@ -83,11 +102,18 @@ export class HeroScrollEngine {
       });
     }, section);
 
-    ScrollTrigger.refresh();
+    syncScrollLayout(lenis);
+
+    this.scrubber = await FrameSequenceScrubber.create(canvas);
+
+    syncScrollLayout(lenis);
+    setTimeout(() => syncScrollLayout(lenis), 100);
+    setTimeout(() => syncScrollLayout(lenis), 400);
+
+    this.queueProgress(this.scrollTrigger?.progress ?? 0);
     onReady();
   }
 
-  /** Coalesce scroll-driven DOM work into one rAF — never seek video. */
   private queueProgress(progress: number) {
     this.pendingProgress = progress;
     if (!this.rafId) {
@@ -117,6 +143,9 @@ export class HeroScrollEngine {
     if (this.rafId) {
       cancelAnimationFrame(this.rafId);
       this.rafId = 0;
+    }
+    if (this.onResize) {
+      window.removeEventListener("resize", this.onResize);
     }
     this.resizeObserver?.disconnect();
     this.scrubber?.destroy();

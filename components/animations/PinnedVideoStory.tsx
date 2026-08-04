@@ -51,7 +51,7 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
   const contextRef = useRef<VideoStoryContextValue>({ ready: false, isComplete: false });
 
   const reduced = useReducedMotion();
-  const { isReady: scrollReady, isSmooth } = useLenisContext();
+  const { isReady: scrollReady, isSmooth, lenisRef } = useLenisContext();
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -70,6 +70,7 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
     const storyRoot = overlay.querySelector<HTMLElement>("[data-hero-story-root]");
     if (!storyRoot) return;
 
+    let cancelled = false;
     let engine: HeroScrollEngine | undefined;
 
     engine = new HeroScrollEngine({
@@ -80,7 +81,9 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
       progressBar: progressRef.current,
       scrollHint: overlay.querySelector('[data-story-hint="true"]'),
       scroller: getScrollScroller(isSmooth),
+      lenis: lenisRef.current,
       onReady: () => {
+        if (cancelled) return;
         section.dataset.heroReady = "true";
         placeholderRef.current?.remove();
         contextRef.current.ready = true;
@@ -93,6 +96,7 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
     void engine.init();
 
     return () => {
+      cancelled = true;
       engine?.destroy();
     };
   }, [reduced, scrollReady, isSmooth]);
@@ -101,7 +105,7 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
     <VideoStoryContext.Provider value={contextRef.current}>
       <section
         ref={sectionRef}
-        id={id}
+        id={id ?? "animation-viewport"}
         data-hero-section="true"
         data-story-complete="false"
         className={cn("relative", className)}
@@ -109,7 +113,7 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
       >
         <div
           ref={stageRef}
-          className="hero-cinematic-stage relative h-[100svh] w-full overflow-hidden bg-[#fdfbf7]"
+          className="hero-cinematic-stage relative h-[100svh] w-full overflow-hidden bg-[#0a0a0a]"
         >
           <canvas
             ref={canvasRef}
@@ -120,20 +124,21 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
           {/* Static poster while frames preload */}
           <div
             ref={placeholderRef}
-            className="absolute inset-0 bg-[#fdfbf7]"
+            className="absolute inset-0 bg-onyx-dark"
             aria-hidden
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={heroFrameUrl(0)}
               alt=""
-              className="h-full w-full object-cover object-[center_40%] opacity-90"
+              className="hero-frame-poster h-full w-full object-cover object-center opacity-100"
               fetchPriority="high"
               decoding="async"
             />
           </div>
 
           <div className="hero-cinematic-overlay pointer-events-none absolute inset-0" aria-hidden />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-radial-vignette opacity-45" aria-hidden />
 
           <div ref={overlayRef} className="absolute inset-0 z-20">
             {children}

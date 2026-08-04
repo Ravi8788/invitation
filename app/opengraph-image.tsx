@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { WEDDING } from "@/lib/constants";
 
 export const runtime = "edge";
-export const alt = "Sonal & Avishkar Engagement Invitation";
+export const alt = WEDDING.metadata.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -19,8 +19,7 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background:
-            "linear-gradient(135deg, #FFFDF9 0%, #FAF3E9 50%, #F4D97633 100%)",
+          background: "linear-gradient(135deg, #4A0812 0%, #6B0F1A 50%, #8B1538 100%)",
           fontFamily: "Georgia, serif",
         }}
       >
@@ -32,31 +31,24 @@ export default function OpenGraphImage() {
             border: "2px solid #D4AF37",
             borderRadius: 24,
             padding: "64px 80px",
-            background: "rgba(255, 253, 249, 0.9)",
+            background: "rgba(74, 8, 18, 0.85)",
           }}
         >
-          <p style={{ fontSize: 28, color: "#7A1E2B", letterSpacing: 8, margin: 0 }}>
-            ENGAGEMENT INVITATION
+          <p style={{ fontSize: 28, color: "#D4AF37", letterSpacing: 6, margin: 0 }}>
+            सुपारी सुकरपुडा
           </p>
-          <p
-            style={{
-              fontSize: 72,
-              color: "#241413",
-              margin: "24px 0 8px",
-              letterSpacing: 4,
-            }}
-          >
-            {couple.bride} & {couple.groom}
+          <p style={{ fontSize: 64, color: "#FFF8F0", margin: "24px 0 8px" }}>
+            {couple.bride} आणि {couple.groom}
           </p>
           <p style={{ fontSize: 32, color: "#D4AF37", margin: "16px 0" }}>
             {weddingDate.display}
           </p>
-          <p style={{ fontSize: 24, color: "#6B5A52", margin: 0 }}>
+          <p style={{ fontSize: 24, color: "#FFF8F0", margin: 0, opacity: 0.85 }}>
             {venue.name}, {venue.city}
           </p>
         </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   );
 }

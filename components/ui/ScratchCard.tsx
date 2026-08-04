@@ -325,9 +325,7 @@ export function ScratchCard({
           >
             {scratchLabel}
             {mobile ? (
-              <p className="font-body mt-4 text-[10px] uppercase tracking-[0.28em] opacity-60">
-                Swipe to scratch
-              </p>
+              <p className="font-body mt-4 text-[10px] opacity-60">घासून उघडा</p>
             ) : null}
           </div>
         </>

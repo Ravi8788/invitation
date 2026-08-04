@@ -5,12 +5,9 @@ const SCENES = [
   { id: "2", ...HERO_SCENE_RANGES.scene2 },
   { id: "3", ...HERO_SCENE_RANGES.scene3 },
   { id: "4", ...HERO_SCENE_RANGES.scene4 },
-  { id: "5", ...HERO_SCENE_RANGES.scene5 },
-  { id: "6", ...HERO_SCENE_RANGES.scene6 },
-  { id: "7", ...HERO_SCENE_RANGES.scene7 },
 ] as const;
 
-const EDGE = 0.05;
+const EDGE = 0.06;
 
 function alphaInSegment(progress: number, start: number, end: number): number {
   if (progress < start || progress >= end) return 0;
@@ -26,15 +23,11 @@ export interface HeroSceneController {
   hideAll: () => void;
 }
 
-/** Cached scene nodes — no querySelector during scroll. */
 export function createHeroSceneController(root: HTMLElement): HeroSceneController {
   const scenes = SCENES.map((range) => ({
     range,
     el: root.querySelector<HTMLElement>(`[data-hero-scene="${range.id}"]`),
   }));
-
-  const particles = root.querySelector<HTMLElement>("[data-hero-particles]");
-  const glow = root.querySelector<HTMLElement>("[data-hero-glow]");
 
   const apply = (progress: number) => {
     for (const { range, el } of scenes) {
@@ -46,18 +39,6 @@ export function createHeroSceneController(root: HTMLElement): HeroSceneControlle
       el.style.pointerEvents = alpha > 0.5 ? "auto" : "none";
       el.dataset.active = on ? "true" : "false";
     }
-
-    if (particles) {
-      const a = alphaInSegment(progress, 0, 0.15) * 0.9;
-      particles.style.opacity = String(a);
-      particles.style.visibility = a > 0.02 ? "visible" : "hidden";
-    }
-
-    if (glow) {
-      const a = alphaInSegment(progress, 0.3, 0.45) * 0.85;
-      glow.style.opacity = String(a);
-      glow.style.visibility = a > 0.02 ? "visible" : "hidden";
-    }
   };
 
   return {
@@ -66,16 +47,8 @@ export function createHeroSceneController(root: HTMLElement): HeroSceneControlle
   };
 }
 
+/** Lenis uses documentElement; mobile uses native window scroll. */
 export function getScrollScroller(isSmooth: boolean): HTMLElement | Window {
-  return isSmooth ? document.body : window;
-}
-
-/** @deprecated Use createHeroSceneController */
-export function enforceHeroSceneVisibility(root: HTMLElement, progress: number) {
-  createHeroSceneController(root).setProgress(progress);
-}
-
-/** @deprecated Use createHeroSceneController */
-export function hideAllHeroScenes(root: HTMLElement) {
-  createHeroSceneController(root).hideAll();
+  if (!isSmooth || typeof document === "undefined") return window;
+  return document.documentElement;
 }

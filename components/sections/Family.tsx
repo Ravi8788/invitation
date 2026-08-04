@@ -1,74 +1,68 @@
 "use client";
 
-import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 import { WEDDING } from "@/lib/constants";
-import type { Family } from "@/types";
-import { CinematicHeading } from "@/components/ui/CinematicHeading";
-import { SectionAtmosphere } from "@/components/ui/SectionAtmosphere";
-import { SectionShell } from "@/components/ui/SectionShell";
+import { ReelSection, ReelSectionGrid } from "@/components/ui/ReelSection";
 
-function FamilyColumn({ family, delay }: { family: Family; delay: number }) {
+function MandalaIcon() {
   return (
-    <motion.div
-      className="invitation-card p-6 text-center md:p-8 md:text-left"
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.65, delay, ease: "easeOut" }}
-    >
-      {family.label ? (
-        <p className="font-display text-[10px] uppercase tracking-[0.4em] text-gold-light/70">
-          {family.label}
-        </p>
-      ) : null}
-      {family.subtitle ? (
-        <p className="font-display mt-2 text-xs uppercase tracking-[0.25em] text-ivory/55">
-          {family.subtitle}
-        </p>
-      ) : null}
-      <h3 className="font-display mt-4 text-xl text-gold-gradient sm:text-2xl">{family.title}</h3>
-      <p className="font-body mt-4 text-sm italic leading-relaxed text-ivory/55">{family.note}</p>
-      <ul className="mt-8 space-y-5">
-        {family.members.map((member, i) => (
-          <motion.li
-            key={member.name}
-            initial={{ opacity: 0, x: -8 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: delay + 0.1 + i * 0.08 }}
-          >
-            <p className="font-display text-base text-ivory sm:text-lg">{member.name}</p>
-            <p className="font-body mt-0.5 text-sm text-ivory/50">{member.relation}</p>
-          </motion.li>
-        ))}
-      </ul>
-    </motion.div>
+    <div className="mx-auto mb-6 flex h-16 w-16 animate-[pulse_3s_infinite] items-center justify-center text-gold/80">
+      <svg viewBox="0 0 100 100" className="h-full w-full" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+        <circle cx="50" cy="50" r="44" />
+        <circle cx="50" cy="50" r="38" strokeDasharray="4 2" />
+        <path d="M50,15 C40,30 40,55 50,75 C60,55 60,30 50,15 Z" />
+        <path d="M50,22 C45,35 45,50 50,68 C55,50 55,35 50,22 Z" strokeWidth="1" strokeDasharray="2 1" />
+        <circle cx="50" cy="50" r="4" fill="currentColor" />
+      </svg>
+    </div>
   );
 }
 
+function BlessingCard({
+  label,
+  sublabel,
+  children,
+}: {
+  label: string;
+  sublabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="blessing-card reel-card rounded-2xl transition-all duration-300 hover:border-reel-gold">
+      <span className="hero-reel-gold font-sans mb-4 block text-[10px]">
+        {label}
+      </span>
+      <span className="mb-4 block text-[10px] text-white/50">{sublabel}</span>
+      <div className="space-y-4">{children}</div>
+    </div>
+  );
+}
+
+/** Block 3 — Welcoming Families (reference reel) */
 export function Family() {
-  const { families } = WEDDING;
+  const { couple, ui } = WEDDING;
 
   return (
-    <SectionShell
-      id="family"
-      theme="cinematic"
-      cinematic
-      atmosphere={<SectionAtmosphere embers={4} />}
-      contentClassName="max-w-5xl"
-      aria-label="Family"
+    <ReelSection
+      id="blessings-section"
+      theme="blessings"
+      eyebrow={ui.family.eyebrow}
+      title={ui.family.title}
+      subtitle={ui.family.subtitle}
+      headerClassName="!max-w-xl"
+      leading={<MandalaIcon />}
     >
-      <CinematicHeading
-        eyebrow="Mangal Aashirwad"
-        title="Welcoming Families"
-        subtitle="A warm invitation from our families to join us in celebrating this divine union."
-        className="mb-14 sm:mb-16"
-      />
+      <ReelSectionGrid>
+        <BlessingCard label={ui.family.swagatTitle} sublabel={ui.family.welcomedBy}>
+          <p className="font-serif text-base font-medium text-white/90">{couple.groomParents}</p>
+          <p className="font-serif text-base font-medium text-white/90">{couple.brideParents}</p>
+        </BlessingCard>
 
-      <div className="grid w-full gap-8 md:grid-cols-2 md:gap-10 lg:gap-12">
-        <FamilyColumn family={families.bride} delay={0.1} />
-        <FamilyColumn family={families.groom} delay={0.2} />
-      </div>
-    </SectionShell>
+        <BlessingCard label={ui.family.darshanTitle} sublabel={ui.family.awaitingBlessings}>
+          <p className="font-serif text-base font-medium text-white/90">{ui.family.guestsLine}</p>
+          <p className="font-serif text-base font-medium text-white/90">{ui.family.parivaarLine}</p>
+        </BlessingCard>
+      </ReelSectionGrid>
+    </ReelSection>
   );
 }
