@@ -11,7 +11,6 @@ import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const input = join(root, "public/videos/final.mp4");
-const fallback = join(root, "final.mp4");
 const outDir = join(root, "public/videos/hero-frames");
 const manifestPath = join(root, "lib/heroFramesManifest.json");
 
@@ -21,11 +20,12 @@ const QUALITY = 78;
 /** Subtle colour lift — keep mandap natural, not over-bright */
 const VIDEO_FILTER = "eq=brightness=0.02:contrast=1.04:saturation=1.06";
 
-const source = existsSync(input) ? input : existsSync(fallback) ? fallback : null;
-if (!source) {
-  console.error("Missing final.mp4");
+if (!existsSync(input)) {
+  console.error("Missing public/videos/final.mp4");
   process.exit(1);
 }
+
+const source = input;
 
 if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });

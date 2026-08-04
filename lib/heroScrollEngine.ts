@@ -80,6 +80,7 @@ export class HeroScrollEngine {
       syncScrollLayout(lenis);
     };
     window.addEventListener("resize", this.onResize);
+    window.addEventListener("orientationchange", this.onResize);
 
     syncScrollLayout(lenis);
 
@@ -146,6 +147,7 @@ export class HeroScrollEngine {
     }
     if (this.onResize) {
       window.removeEventListener("resize", this.onResize);
+      window.removeEventListener("orientationchange", this.onResize);
     }
     this.resizeObserver?.disconnect();
     this.scrubber?.destroy();

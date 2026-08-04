@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "extract-hero-frames": "node scripts/extract-hero-frames.mjs",
-    "generate-hero-frames": "node scripts/generate-hero-frames-from-images.mjs"
+    "extract-hero-frames": "node scripts/extract-hero-frames.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
