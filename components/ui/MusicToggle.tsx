@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Music2, VolumeX } from "lucide-react";
 import { WEDDING } from "@/lib/constants";
@@ -9,13 +10,25 @@ import { cn } from "@/lib/utils";
 export function MusicToggle() {
   const { ui } = WEDDING;
   const { isPlaying, hasSource, toggle } = useBackgroundMusic();
+  const touchHandledRef = useRef(false);
 
   if (!hasSource) return null;
 
   return (
     <motion.button
       type="button"
-      onClick={() => void toggle()}
+      onPointerDown={(event) => {
+        if (event.pointerType !== "touch") return;
+        touchHandledRef.current = true;
+        toggle();
+      }}
+      onClick={() => {
+        if (touchHandledRef.current) {
+          touchHandledRef.current = false;
+          return;
+        }
+        toggle();
+      }}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.6, duration: 0.45 }}

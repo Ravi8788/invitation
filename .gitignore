@@ -45,6 +45,8 @@ CLAUDE.md
 reference-frames/
 lighthouse-report*.json
 
+public/audio/bg-music-source.mpeg
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

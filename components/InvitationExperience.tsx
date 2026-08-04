@@ -11,11 +11,12 @@ import { cn } from "@/lib/utils";
 
 function InvitationShell({ children }: { children: React.ReactNode }) {
   const { loaderComplete, completeLoader, skipLoader } = useInvitationOpened();
-  const { play } = useBackgroundMusic();
+  const { playFromGesture } = useBackgroundMusic();
 
   const handleOpenInvitation = () => {
+    // iOS/Android: play() must run in the same tap handler, before any state updates.
+    playFromGesture();
     completeLoader();
-    void play();
   };
 
   return (
