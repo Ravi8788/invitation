@@ -46,7 +46,7 @@ export function CinematicHeading({
 
       <motion.h2
         id={titleId}
-        className="font-display text-3xl font-semibold uppercase tracking-[0.14em] text-ivory sm:text-4xl md:text-5xl"
+        className="font-display text-[clamp(1.5rem,5.5vw,2.75rem)] font-semibold uppercase tracking-[0.1em] text-ivory sm:tracking-[0.14em] md:text-4xl lg:text-5xl"
         style={{ textShadow: "0 0 40px rgba(212,180,131,0.25)" }}
         initial={{ opacity: 0, y: reduced ? 0 : 20, filter: reduced ? "none" : "blur(4px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -58,7 +58,7 @@ export function CinematicHeading({
 
       {subtitle ? (
         <motion.p
-          className="font-body max-w-xl text-sm leading-relaxed text-ivory/65 sm:text-base"
+          className="font-body max-w-xl text-[0.8125rem] leading-relaxed text-ivory/65 sm:text-sm md:text-base"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}

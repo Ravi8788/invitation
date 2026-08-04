@@ -21,18 +21,14 @@ function JourneyIcon({ milestone }: { milestone: StoryMilestone }) {
 
   return (
     <motion.div
-      className={cn(
-        "relative flex aspect-square w-full max-w-[220px] items-center justify-center justify-self-center rounded-full",
-        "border border-primary/25 bg-[radial-gradient(circle,rgba(212,180,131,0.14)_0%,transparent_68%)]",
-        "shadow-[0_16px_48px_rgba(0,0,0,0.5)]"
-      )}
-      initial={{ opacity: 0, scale: 0.94 }}
-      whileInView={{ opacity: 1, scale: 1 }}
+      className="flex justify-center md:justify-end"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       aria-hidden
     >
-      <Icon className="h-10 w-10 text-gold-light/80 sm:h-12 sm:w-12" strokeWidth={1.25} />
+      <Icon className="h-9 w-9 text-[#d4b483]/75 sm:h-10 sm:w-10" strokeWidth={1.25} />
     </motion.div>
   );
 }
@@ -49,23 +45,24 @@ function JourneyEntry({
   return (
     <div
       className={cn(
-        "grid items-center gap-8 md:grid-cols-2 md:gap-12 lg:gap-16",
+        "grid items-start gap-5 text-center md:grid-cols-2 md:gap-12 md:text-left lg:gap-16",
         reversed && "md:[&>*:first-child]:order-2"
       )}
     >
       <JourneyIcon milestone={milestone} />
 
       <motion.div
+        className="md:max-w-none"
         initial={{ opacity: 0, x: reversed ? -24 : 24 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.65, delay: 0.1, ease: "easeOut" }}
       >
-        <p className="font-body text-[10px] uppercase tracking-[0.35em] text-ivory/45">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-ivory/45 sm:tracking-[0.35em]">
           {milestone.monthLabel ?? milestone.year}
         </p>
-        <h3 className="font-display mt-2 text-xl text-ivory sm:text-2xl">{milestone.title}</h3>
-        <p className="font-body mt-4 text-sm leading-relaxed text-ivory/65 sm:text-base">
+        <h3 className="font-display mt-2 text-lg text-ivory sm:text-xl md:text-2xl">{milestone.title}</h3>
+        <p className="font-body mx-auto mt-3 max-w-md text-sm leading-relaxed text-ivory/65 md:mx-0 md:max-w-none sm:text-base">
           {milestone.description}
         </p>
       </motion.div>

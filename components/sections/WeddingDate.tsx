@@ -28,7 +28,7 @@ function DetailCard({
     >
       <Icon className="mb-3 h-4 w-4 text-gold-light/80" strokeWidth={1.5} aria-hidden />
       <p className="font-display text-xl leading-none text-ivory sm:text-2xl">{primary}</p>
-      <p className="font-body mt-2.5 max-w-[9rem] text-[9px] uppercase leading-relaxed tracking-[0.2em] text-gold-light/75 sm:text-[10px]">
+      <p className="font-body mt-2.5 text-[9px] uppercase leading-relaxed tracking-[0.18em] text-gold-light/75 sm:max-w-none sm:text-[10px] sm:tracking-[0.2em]">
         {secondary}
       </p>
     </motion.div>
@@ -47,7 +47,7 @@ export function WeddingDate() {
       aria-labelledby="save-the-date-heading"
     >
       <motion.div
-        className="invitation-card relative w-full max-w-md px-6 py-10 sm:px-8 sm:py-12"
+        className="section-card invitation-card relative"
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
@@ -87,7 +87,7 @@ export function WeddingDate() {
             </span>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-9 sm:gap-4">
+          <div className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:mt-9 sm:gap-4">
             <DetailCard icon={Calendar} primary={weddingDate.time} secondary="Ring Ceremony" delay={0.08} />
             <DetailCard icon={MapPin} primary={venue.city} secondary={venue.name} delay={0.14} />
           </div>

@@ -28,7 +28,7 @@ export function Quote() {
       <h2 id="quote-heading" className="sr-only">
         Engagement Quote
       </h2>
-      <blockquote className="text-center font-display text-xl font-medium leading-relaxed tracking-wide text-ivory/90 sm:text-2xl md:text-3xl lg:text-4xl lg:leading-snug">
+      <blockquote className="text-center font-display text-[clamp(1.125rem,4.2vw,2.25rem)] font-medium leading-relaxed tracking-wide text-ivory/90 md:text-3xl lg:leading-snug">
         <span className="sr-only">&ldquo;</span>
         {words.map((word, index) => (
           <motion.span

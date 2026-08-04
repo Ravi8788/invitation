@@ -1,59 +1,53 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { WEDDING } from "@/lib/constants";
-import { PROMISE_MOMENT } from "@/lib/images";
 import { OrnamentalDivider } from "@/components/ui/OrnamentalDivider";
 import { SectionAtmosphere } from "@/components/ui/SectionAtmosphere";
 import { SectionShell } from "@/components/ui/SectionShell";
 
-function PromisePortal({ active }: { active: boolean }) {
+function PromiseEmblem({ active }: { active: boolean }) {
+  const { couple } = WEDDING;
   const reduced = useReducedMotion();
 
   return (
-    <div
-      className="relative mx-auto aspect-square w-[min(88vw,440px)] shrink-0"
-      aria-hidden={false}
-    >
+    <div className="relative mx-auto aspect-square w-full max-w-[min(72vw,280px)] shrink-0 sm:max-w-[320px]">
       <motion.div
-        className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(circle,rgba(212,180,131,0.3)_0%,rgba(255,140,66,0.06)_50%,transparent_72%)] blur-2xl"
+        className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(circle,rgba(212,180,131,0.28)_0%,transparent_68%)] blur-xl"
         initial={{ opacity: 0, scale: 0.85 }}
         animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        aria-hidden
       />
 
-      {[100, 88, 76].map((size, i) => (
+      {[100, 86, 72].map((size, i) => (
         <motion.div
           key={size}
           className="pointer-events-none absolute left-1/2 top-1/2 rounded-full border border-[#d4b483]/30"
           style={{ width: `${size}%`, height: `${size}%`, x: "-50%", y: "-50%" }}
           initial={{ opacity: 0, scale: 0.94 }}
-          animate={active ? { opacity: 0.3 + i * 0.12, scale: 1 } : { opacity: 0, scale: 0.94 }}
+          animate={active ? { opacity: 0.28 + i * 0.14, scale: 1 } : { opacity: 0, scale: 0.94 }}
           transition={{ duration: 0.75, delay: 0.1 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+          aria-hidden
         />
       ))}
 
       <motion.div
-        className="absolute left-1/2 top-1/2 z-10 aspect-square w-[68%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-2 border-[#d4b483]/45 shadow-[0_0_48px_rgba(212,180,131,0.22)]"
+        className="absolute left-1/2 top-1/2 z-10 flex aspect-square w-[58%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#d4b483]/50 bg-[radial-gradient(circle_at_50%_38%,rgba(212,180,131,0.14)_0%,rgba(15,21,41,0.92)_58%)] shadow-[0_0_48px_rgba(212,180,131,0.18),inset_0_0_32px_rgba(0,0,0,0.35)]"
         initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
         animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.85, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Image
-          src={PROMISE_MOMENT}
-          alt="Engagement ceremony setting with floral décor"
-          fill
-          className="object-cover object-center"
-          sizes="(max-width: 768px) 60vw, 300px"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0f1529]/55 via-transparent to-[#0f1529]/10" />
+        <span className="font-script text-[clamp(2rem,9vw,3.25rem)] leading-none text-[#d4b483]">
+          {couple.initials}
+        </span>
         {!reduced && active ? (
           <motion.div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/18 to-transparent"
-            animate={{ x: ["-120%", "120%"] }}
-            transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 4, ease: "easeInOut" }}
+            className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/12 to-transparent"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            aria-hidden
           />
         ) : null}
       </motion.div>
@@ -82,7 +76,7 @@ export function ThePromise() {
       id="the-promise"
       theme="cinematic"
       cinematic
-      contentClassName="flex min-h-[100dvh] max-w-4xl flex-col items-center justify-center gap-8 py-16 sm:gap-10 sm:py-20"
+      contentClassName="flex w-full max-w-4xl flex-col items-center justify-center gap-6 py-12 sm:gap-8 sm:py-16 md:gap-10 md:py-20"
       atmosphere={
         <>
           <SectionAtmosphere embers={3} glow />
@@ -122,7 +116,7 @@ export function ThePromise() {
         </motion.div>
       </div>
 
-      <PromisePortal active={isInView} />
+      <PromiseEmblem active={isInView} />
 
       <motion.p
         {...fade(reduced ? 0.2 : 0.45)}

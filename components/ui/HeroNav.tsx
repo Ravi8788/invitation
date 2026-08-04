@@ -35,8 +35,8 @@ export function HeroNav() {
       aria-label="Main navigation"
     >
       <div className="mx-auto max-w-6xl px-3 sm:px-4">
-        <div className="nav-scroll -mx-1 overflow-x-auto px-1 pb-0.5 sm:overflow-visible sm:pb-0">
-          <ul className="flex w-max min-w-full items-center justify-start gap-1 sm:w-auto sm:min-w-0 sm:flex-wrap sm:justify-center sm:gap-x-2">
+        <div className="nav-scroll overflow-x-auto pb-0.5 sm:overflow-visible sm:pb-0">
+          <ul className="flex w-max min-w-full items-center justify-start gap-0.5 sm:w-auto sm:min-w-0 sm:flex-wrap sm:justify-center sm:gap-x-1">
             {NAV_ITEMS.map((item, index) => (
               <li key={item.href} className="flex shrink-0 items-center">
                 {index > 0 ? (
@@ -51,8 +51,8 @@ export function HeroNav() {
                     scrollToSection(item.href);
                   }}
                   className={cn(
-                    "inline-flex min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full px-2.5",
-                    "font-body text-[9px] uppercase tracking-[0.14em] transition-colors sm:px-0 sm:text-[11px] sm:tracking-[0.18em]",
+                    "inline-flex min-h-11 min-w-[2.75rem] items-center justify-center rounded-full px-2",
+                    "font-body text-[8px] uppercase tracking-[0.12em] transition-colors sm:px-2.5 sm:text-[11px] sm:tracking-[0.18em]",
                     scrolled
                       ? "text-[#fdfbf7]/65 hover:text-[#d4b483] active:text-[#d4b483]"
                       : "hero-text-shadow text-[#fdfbf7]/75 hover:text-[#d4b483] active:text-[#d4b483]",

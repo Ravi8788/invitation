@@ -36,10 +36,11 @@ export const SectionShell = forwardRef<HTMLElement, SectionShellProps>(
         ref={ref}
         id={id}
         className={cn(
-          "relative overflow-hidden",
+          "relative w-full overflow-hidden",
           isCinematic ? "section-cinematic" : theme === "maroon" ? "section-maroon" : theme === "warm" ? "section-warm" : "section-ivory",
-          cinematic && "flex min-h-[100dvh] flex-col justify-center",
-          !cinematic && "px-4 py-16 sm:px-6 sm:py-24 md:py-32",
+          cinematic && "flex min-h-[100dvh] min-h-[100svh] flex-col justify-center",
+          !cinematic &&
+            "px-[max(1rem,env(safe-area-inset-left))] py-16 sm:px-6 sm:py-24 md:py-28",
           className
         )}
         {...aria}
@@ -68,10 +69,15 @@ export const SectionShell = forwardRef<HTMLElement, SectionShellProps>(
 
         <div
           className={cn(
-            "relative z-10 w-full",
+            "relative z-10 mx-auto w-full",
             cinematic
-              ? "flex flex-col items-center justify-center px-4 py-14 sm:px-6 sm:py-16 md:py-20"
-              : "mx-auto max-w-6xl",
+              ? cn(
+                  "flex max-w-6xl flex-col items-center justify-center",
+                  "px-[max(1rem,env(safe-area-inset-left))] py-14",
+                  "pb-[max(2rem,env(safe-area-inset-bottom))]",
+                  "sm:px-6 sm:py-16 md:py-20",
+                )
+              : "max-w-6xl",
             contentClassName
           )}
         >

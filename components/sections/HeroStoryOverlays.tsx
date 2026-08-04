@@ -9,6 +9,15 @@ import { useInvitationOpened } from "@/hooks/useInvitationOpened";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
 
+const SCENE_BASE =
+  "hero-scene pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-4 pt-[calc(3.75rem+env(safe-area-inset-top,0px))] pb-[max(4.5rem,env(safe-area-inset-bottom,0px))] sm:px-6 sm:pb-20";
+
+const HEADING =
+  "hero-scene-heading font-display text-[clamp(1.125rem,4.8vw,2.1rem)] font-semibold uppercase leading-snug tracking-[0.08em] text-[#fdfbf7] sm:tracking-[0.1em] md:text-[clamp(1.35rem,3.5vw,2.25rem)]";
+
+const SUBTITLE =
+  "hero-scene-subtitle font-body mx-auto mt-4 max-w-[22rem] text-[0.8125rem] leading-relaxed text-[#fdfbf7]/85 sm:mt-5 sm:max-w-md sm:text-sm md:text-base";
+
 function SplitLetters({ text, className }: { text: string; className?: string }) {
   return (
     <span className={className} aria-label={text}>
@@ -24,17 +33,12 @@ function SplitLetters({ text, className }: { text: string; className?: string })
 function GoldenParticles() {
   const seeds = [
     { left: "12%", top: "22%", delay: "0s", size: 3 },
-    { left: "28%", top: "38%", delay: "0.4s", size: 2 },
     { left: "72%", top: "28%", delay: "0.8s", size: 4 },
-    { left: "84%", top: "44%", delay: "1.1s", size: 2 },
-    { left: "18%", top: "58%", delay: "0.6s", size: 3 },
-    { left: "62%", top: "52%", delay: "1.4s", size: 2 },
     { left: "46%", top: "30%", delay: "0.2s", size: 3 },
-    { left: "88%", top: "62%", delay: "1.8s", size: 2 },
   ];
 
   return (
-    <div data-hero-particles className="pointer-events-none absolute inset-0 z-[1]" aria-hidden>
+    <div data-hero-particles className="pointer-events-none absolute inset-0 z-[1] hidden sm:block" aria-hidden>
       {seeds.map((p, i) => (
         <span
           key={i}
@@ -57,21 +61,13 @@ const HeroScene = memo(function HeroScene({
 }: {
   scene: (typeof HERO_STORY_SCENES)[number];
 }) {
-  const baseClass =
-    "hero-scene pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-5 sm:px-8";
-
   if ("isCouple" in scene && scene.isCouple) {
     return (
-      <div data-hero-scene={scene.id} className={baseClass}>
-        <div className="relative text-center">
-          <div
-            data-scene-glow
-            className="hero-couple-glow pointer-events-none absolute left-1/2 top-1/2 h-48 w-72 -translate-x-1/2 -translate-y-1/2 sm:h-56 sm:w-96"
-            aria-hidden
-          />
+      <div data-hero-scene={scene.id} className={SCENE_BASE}>
+        <div className="hero-scene-inner">
           <h2
             data-scene-heading
-            className="hero-scene-heading font-script text-[clamp(2.25rem,10vw,4.25rem)] leading-tight text-[#fdfbf7]"
+            className="hero-scene-heading font-script text-[clamp(2rem,9vw,4rem)] leading-tight text-[#fdfbf7]"
           >
             Sonal{" "}
             <span data-scene-heart className="hero-heart-pulse inline-block text-[#d4b483]">
@@ -79,10 +75,7 @@ const HeroScene = memo(function HeroScene({
             </span>{" "}
             Avishkar
           </h2>
-          <p
-            data-scene-subtitle
-            className="hero-scene-subtitle font-body mx-auto mt-5 max-w-sm text-sm leading-relaxed text-[#fdfbf7]/85 sm:text-base"
-          >
+          <p data-scene-subtitle className={SUBTITLE}>
             {scene.subtitle}
           </p>
         </div>
@@ -92,27 +85,24 @@ const HeroScene = memo(function HeroScene({
 
   if ("isSaveDate" in scene && scene.isSaveDate) {
     return (
-      <div data-hero-scene={scene.id} className={baseClass}>
-        <div className="text-center">
-          <h2
-            data-scene-heading
-            className="hero-scene-heading font-display text-[clamp(1.35rem,5.5vw,2.25rem)] font-semibold uppercase tracking-[0.14em] text-[#fdfbf7]"
-          >
+      <div data-hero-scene={scene.id} className={SCENE_BASE}>
+        <div className="hero-scene-inner">
+          <h2 data-scene-heading className={HEADING}>
             {scene.heading}
           </h2>
           <p
             data-scene-date
-            className="hero-scene-date font-display mt-6 text-[clamp(1.5rem,6vw,2.5rem)] font-semibold tracking-[0.08em] text-[#d4b483] [perspective:600px]"
+            className="hero-scene-date font-display mt-5 text-[clamp(1.25rem,5.5vw,2.25rem)] font-semibold tracking-[0.06em] text-[#d4b483] sm:mt-6 [perspective:600px]"
           >
             {scene.date}
           </p>
           <div
             data-scene-divider
-            className="hero-scene-divider mx-auto mt-5 h-px w-24 origin-center bg-gradient-to-r from-transparent via-[#d4b483] to-transparent sm:w-32"
+            className="hero-scene-divider mx-auto mt-4 h-px w-20 origin-center bg-gradient-to-r from-transparent via-[#d4b483] to-transparent sm:mt-5 sm:w-28"
           />
           <p
             data-scene-time
-            className="hero-scene-time font-body mt-5 text-sm uppercase tracking-[0.28em] text-[#fdfbf7]/90 sm:text-base"
+            className="hero-scene-time font-body mt-4 text-xs uppercase tracking-[0.22em] text-[#fdfbf7]/90 sm:text-sm"
           >
             {scene.time}
           </p>
@@ -123,26 +113,15 @@ const HeroScene = memo(function HeroScene({
 
   if ("isVenue" in scene && scene.isVenue) {
     return (
-      <div data-hero-scene={scene.id} className={baseClass}>
-        <div className="relative text-center">
-          <div
-            data-scene-glow
-            className="hero-venue-glow pointer-events-none absolute left-1/2 top-1/2 h-40 w-56 -translate-x-1/2 -translate-y-1/2 sm:h-48 sm:w-72"
-            aria-hidden
-          />
-          <div data-scene-icon className="mb-4 flex justify-center">
-            <MapPin className="h-7 w-7 text-[#d4b483] sm:h-8 sm:w-8" strokeWidth={1.25} />
+      <div data-hero-scene={scene.id} className={SCENE_BASE}>
+        <div className="hero-scene-inner">
+          <div data-scene-icon className="mb-3 flex justify-center sm:mb-4">
+            <MapPin className="h-6 w-6 text-[#d4b483] sm:h-7 sm:w-7" strokeWidth={1.25} />
           </div>
-          <h2
-            data-scene-heading
-            className="hero-scene-heading font-display text-[clamp(1.35rem,5.5vw,2.25rem)] font-semibold uppercase tracking-[0.14em] text-[#fdfbf7]"
-          >
+          <h2 data-scene-heading className={HEADING}>
             {scene.heading}
           </h2>
-          <p
-            data-scene-subtitle
-            className="hero-scene-subtitle font-body mt-4 text-base text-[#d4b483] sm:text-lg"
-          >
+          <p data-scene-subtitle className={cn(SUBTITLE, "text-[#d4b483]")}>
             {scene.subtitle}
           </p>
         </div>
@@ -152,25 +131,19 @@ const HeroScene = memo(function HeroScene({
 
   if ("isFinale" in scene && scene.isFinale) {
     return (
-      <div data-hero-scene={scene.id} className={baseClass}>
-        <div className="mx-auto max-w-xl text-center">
-          <h2
-            data-scene-heading
-            className="hero-scene-heading font-display text-[clamp(1.25rem,5vw,2rem)] font-semibold uppercase leading-snug tracking-[0.1em] text-[#fdfbf7] sm:tracking-[0.12em]"
-          >
+      <div data-hero-scene={scene.id} className={SCENE_BASE}>
+        <div className="hero-scene-inner max-w-lg">
+          <h2 data-scene-heading className={HEADING}>
             {scene.heading}
           </h2>
-          <p
-            data-scene-subtitle
-            className="hero-scene-subtitle font-body mx-auto mt-5 max-w-md text-sm leading-relaxed text-[#fdfbf7]/85 sm:text-base"
-          >
+          <p data-scene-subtitle className={SUBTITLE}>
             {scene.subtitle}
           </p>
           <button
             type="button"
             data-scene-cta
             onClick={() => scrollToSection("#save-the-date")}
-            className="hero-cta-shimmer btn-gold-cinematic pointer-events-auto relative mt-8 min-h-11 overflow-hidden px-10 py-2.5 text-[11px] uppercase tracking-[0.24em] sm:text-xs"
+            className="hero-cta-shimmer btn-gold-cinematic pointer-events-auto relative mt-6 min-h-11 w-full max-w-xs overflow-hidden px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] sm:mt-8 sm:w-auto sm:px-10 sm:text-[11px] sm:tracking-[0.24em]"
           >
             <span className="relative z-[1]">{scene.cta}</span>
           </button>
@@ -183,27 +156,21 @@ const HeroScene = memo(function HeroScene({
   const isScene2 = scene.id === "2";
 
   return (
-    <div data-hero-scene={scene.id} className={baseClass}>
-      <div className="mx-auto max-w-2xl text-center">
-        <h2
-          data-scene-heading
-          className="hero-scene-heading font-display text-[clamp(1.25rem,5vw,2.1rem)] font-semibold uppercase leading-snug tracking-[0.1em] text-[#fdfbf7] sm:tracking-[0.12em]"
-        >
+    <div data-hero-scene={scene.id} className={SCENE_BASE}>
+      <div className="hero-scene-inner max-w-2xl">
+        <h2 data-scene-heading className={HEADING}>
           {isScene1 ? <SplitLetters text={scene.heading} /> : scene.heading}
         </h2>
 
         {isScene2 ? (
           <div
             data-scene-divider
-            className="hero-scene-divider mx-auto mt-5 h-px w-20 origin-center bg-gradient-to-r from-transparent via-[#d4b483] to-transparent sm:w-28"
+            className="hero-scene-divider mx-auto mt-4 h-px w-16 origin-center bg-gradient-to-r from-transparent via-[#d4b483] to-transparent sm:mt-5 sm:w-24"
           />
         ) : null}
 
         {"subtitle" in scene && scene.subtitle ? (
-          <p
-            data-scene-subtitle
-            className="hero-scene-subtitle font-body mx-auto mt-5 max-w-lg text-sm leading-relaxed text-[#fdfbf7]/82 sm:text-base"
-          >
+          <p data-scene-subtitle className={SUBTITLE}>
             {scene.subtitle}
           </p>
         ) : null}
@@ -222,13 +189,13 @@ const HeroScrollHint = memo(function HeroScrollHint() {
   return (
     <div
       data-story-hint="true"
-      className="pointer-events-none absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1.5 will-change-[opacity] sm:bottom-5"
+      className="pointer-events-none absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 will-change-[opacity] sm:bottom-4"
     >
-      <div className="hero-scroll-hint-bob flex flex-col items-center gap-1.5 text-[#fdfbf7]/55">
-        <span className="font-body text-[8px] uppercase tracking-[0.32em] sm:text-[9px]">
+      <div className="hero-scroll-hint-bob flex flex-col items-center gap-1 text-[#fdfbf7]/55">
+        <span className="font-body text-[7px] uppercase tracking-[0.28em] sm:text-[8px] sm:tracking-[0.32em]">
           {hero.scrollHint ?? "Scroll to explore the story"}
         </span>
-        <Mouse className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
+        <Mouse className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={1.5} />
       </div>
     </div>
   );
@@ -238,9 +205,9 @@ const ReducedMotionHero = memo(function ReducedMotionHero() {
   const finale = HERO_STORY_SCENES[6];
 
   return (
-    <div className="flex h-full items-center justify-center px-5">
-      <div className="mx-auto max-w-xl text-center">
-        <h1 className="font-display text-2xl font-semibold uppercase tracking-[0.12em] text-[#fdfbf7] sm:text-3xl">
+    <div className="flex h-full items-center justify-center px-4 pt-16 pb-8 sm:px-6">
+      <div className="hero-scene-inner max-w-lg">
+        <h1 className="font-display text-xl font-semibold uppercase tracking-[0.1em] text-[#fdfbf7] sm:text-2xl">
           {finale.heading}
         </h1>
         <p className="font-body mt-4 text-sm leading-relaxed text-[#fdfbf7]/85 sm:text-base">
@@ -249,7 +216,7 @@ const ReducedMotionHero = memo(function ReducedMotionHero() {
         <button
           type="button"
           onClick={() => scrollToSection("#save-the-date")}
-          className="btn-gold-cinematic mt-8 min-h-11 px-10 py-2.5 text-[11px] uppercase tracking-[0.24em] sm:text-xs"
+          className="btn-gold-cinematic mt-6 min-h-11 w-full px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] sm:mt-8 sm:w-auto sm:px-10 sm:text-[11px]"
         >
           {finale.cta}
         </button>
@@ -266,12 +233,7 @@ export const HeroStoryOverlays = memo(function HeroStoryOverlays() {
   }
 
   return (
-    <div data-hero-story-root className="relative h-full w-full">
-      <div
-        data-hero-vignette
-        className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_70%_at_50%_45%,rgba(8,10,24,0.75),transparent_68%)]"
-        aria-hidden
-      />
+    <div data-hero-story-root className="relative h-full w-full overflow-hidden">
       <GoldenParticles />
       {HERO_STORY_SCENES.map((scene) => (
         <HeroScene key={scene.id} scene={scene} />

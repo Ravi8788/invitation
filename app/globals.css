@@ -228,38 +228,51 @@ body {
   overflow-x: clip;
 }
 
-/* Reel-style vertical story scroll — disabled on mobile for faster native scroll */
-@media (max-width: 767px) {
-  .reel-scroll > section {
-    scroll-snap-align: none;
-  }
+/* Anchor scroll offset for fixed nav */
+section[id] {
+  scroll-margin-top: calc(3.75rem + env(safe-area-inset-top, 0px));
+}
 
-  .ceremony-scroll,
-  #ceremony {
-    scroll-snap-align: none;
-  }
+/* Consistent section rhythm */
+.section-inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: max(1rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+}
 
-  html:not(.invitation-locked) {
-    scroll-snap-type: none;
+.section-card {
+  position: relative;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 28rem;
+  padding: 2.25rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .section-card {
+    max-width: 32rem;
+    padding: 2.75rem 2rem;
   }
 }
 
-@media (min-width: 768px) {
-  .reel-scroll > section {
-    scroll-snap-align: start;
-    scroll-snap-stop: normal;
-  }
+/* Horizontal nav scroll on mobile */
+.nav-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
 
-  #hero,
-  [data-hero-section="true"],
-  .ceremony-scroll,
-  #ceremony {
-    scroll-snap-align: none;
-  }
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
 
-  html:not(.invitation-locked) {
-    scroll-snap-type: y proximity;
-  }
+/* Disable scroll-snap — conflicts with pinned hero on mobile & desktop */
+.reel-scroll > section {
+  scroll-snap-align: none;
+}
+
+html:not(.invitation-locked) {
+  scroll-snap-type: none;
 }
 
 /* CSS ember particles — no JS animation overhead on mobile */
@@ -502,21 +515,35 @@ body {
     radial-gradient(ellipse 90% 80% at 50% 50%, rgba(8, 10, 24, 0.35) 0%, transparent 70%);
 }
 
-/* Cinematic scroll story scenes */
+/* Cinematic scroll story scenes — hidden until scroll controller activates one */
 .hero-scene {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: opacity;
+}
+
+.hero-scene[data-active="true"] {
+  pointer-events: auto;
 }
 
 .hero-scene-heading {
+  text-wrap: balance;
   text-shadow:
     0 2px 28px rgba(0, 0, 0, 0.72),
     0 0 48px rgba(15, 21, 41, 0.65);
 }
 
+.hero-scene-inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 36rem;
+  padding-inline: max(1rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  text-align: center;
+}
+
 .hero-scene-subtitle {
+  text-wrap: pretty;
   text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55);
 }
 

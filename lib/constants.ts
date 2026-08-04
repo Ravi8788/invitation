@@ -1,5 +1,4 @@
 import type { WeddingConfig } from "@/types";
-import { PROMISE_RING } from "@/lib/images";
 
 /** Single-event engagement invitation — Sonal & Avishkar */
 export const WEDDING: WeddingConfig = {
@@ -89,7 +88,6 @@ export const WEDDING: WeddingConfig = {
     date: "16 August 2026",
     captionSuffix: "The moment it became forever",
     caption: "16 August 2026 · The moment it became forever",
-    ringImage: PROMISE_RING,
   },
 
   events: [

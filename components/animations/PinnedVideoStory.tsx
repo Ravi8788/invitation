@@ -15,6 +15,7 @@ import { useMotionSettings } from "@/hooks/useMotionSettings";
 import { useLenisContext } from "@/hooks/useLenisContext";
 import { FrameVideoScrubber, waitForVideoReady } from "@/lib/videoScrubber";
 import { buildHeroStoryTimeline, getScrollScroller, HERO_SCROLL_END } from "@/lib/heroStoryGsap";
+import { enforceHeroSceneVisibility, hideAllHeroScenes } from "@/lib/heroSceneVisibility";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -98,8 +99,10 @@ export function PinnedVideoStory({ src, children, className, id }: PinnedVideoSt
 
       if (!storyRoot) return;
 
-       const masterTimeline = buildHeroStoryTimeline(storyRoot);
+      hideAllHeroScenes(storyRoot);
+      const masterTimeline = buildHeroStoryTimeline(storyRoot);
       masterTimeline.progress(0);
+      enforceHeroSceneVisibility(storyRoot, 0);
 
       ctx?.revert();
       ctx = gsap.context(() => {
@@ -116,6 +119,7 @@ export function PinnedVideoStory({ src, children, className, id }: PinnedVideoSt
           animation: masterTimeline,
           onUpdate: (self) => {
             const progress = self.progress;
+            enforceHeroSceneVisibility(storyRoot, progress);
             scrubber?.seekToProgress(progress);
             setProgressBar?.(progress);
             setHintOpacity?.(progress > 0.03 ? 0 : 1);
@@ -153,7 +157,7 @@ export function PinnedVideoStory({ src, children, className, id }: PinnedVideoSt
         className={cn("relative", className)}
         aria-label="Engagement invitation story"
       >
-        <div ref={pinRef} className="relative h-[100dvh] w-full overflow-hidden bg-twilight">
+        <div ref={pinRef} className="relative h-[100dvh] h-[100svh] w-full overflow-hidden bg-twilight">
           <video
             ref={videoRef}
             src={src}
