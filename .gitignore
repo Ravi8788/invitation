@@ -41,6 +41,10 @@ AGENTS.md
 CLAUDE.md
 .cursor/
 
+# dev-only artifacts (not needed in production)
+reference-frames/
+lighthouse-report*.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
