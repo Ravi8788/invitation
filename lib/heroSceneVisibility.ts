@@ -1,6 +1,6 @@
 import { HERO_SCENE_RANGES } from "@/lib/heroStoryScenes";
 
-const SCENE_LIST = [
+const SCENES = [
   { id: "1", ...HERO_SCENE_RANGES.scene1 },
   { id: "2", ...HERO_SCENE_RANGES.scene2 },
   { id: "3", ...HERO_SCENE_RANGES.scene3 },
@@ -10,55 +10,72 @@ const SCENE_LIST = [
   { id: "7", ...HERO_SCENE_RANGES.scene7 },
 ] as const;
 
-/** Fade window as a fraction of each segment (e.g. 0.08 = 8%). */
-const SEGMENT_FADE = 0.08;
+const EDGE = 0.05;
 
-function segmentAlpha(progress: number, start: number, end: number): number {
+function alphaInSegment(progress: number, start: number, end: number): number {
   if (progress < start || progress >= end) return 0;
   const span = end - start;
-  const local = (progress - start) / span;
-  if (local < SEGMENT_FADE) return local / SEGMENT_FADE;
-  if (local > 1 - SEGMENT_FADE) return (1 - local) / SEGMENT_FADE;
+  const t = (progress - start) / span;
+  if (t < EDGE) return t / EDGE;
+  if (t > 1 - EDGE) return (1 - t) / EDGE;
   return 1;
 }
 
-/**
- * Hard guarantee: only one hero scene visible at a time.
- * Uses inline styles so GSAP timeline cannot leave stale visibility.
- */
-export function enforceHeroSceneVisibility(root: HTMLElement, progress: number) {
-  const scenes = root.querySelectorAll<HTMLElement>("[data-hero-scene]");
-
-  scenes.forEach((scene) => {
-    const id = scene.dataset.heroScene;
-    const range = SCENE_LIST.find((s) => s.id === id);
-    const alpha = range ? segmentAlpha(progress, range.start, range.end) : 0;
-    const visible = alpha > 0.02;
-
-    scene.style.opacity = String(alpha);
-    scene.style.visibility = visible ? "visible" : "hidden";
-    scene.style.pointerEvents = alpha > 0.45 ? "auto" : "none";
-    scene.dataset.active = visible ? "true" : "false";
-
-    if (!visible) {
-      scene.style.transform = "translateY(0px) scale(1)";
-    }
-  });
-
-  const vignette = root.querySelector<HTMLElement>("[data-hero-vignette]");
-  if (vignette) {
-    vignette.style.opacity = "0";
-    vignette.style.visibility = "hidden";
-  }
-
-  const particles = root.querySelector<HTMLElement>("[data-hero-particles]");
-  if (particles) {
-    const particleAlpha = segmentAlpha(progress, 0, 0.15) * 0.75;
-    particles.style.opacity = String(particleAlpha);
-    particles.style.visibility = particleAlpha > 0.02 ? "visible" : "hidden";
-  }
+export interface HeroSceneController {
+  setProgress: (progress: number) => void;
+  hideAll: () => void;
 }
 
+/** Cached scene nodes — no querySelector during scroll. */
+export function createHeroSceneController(root: HTMLElement): HeroSceneController {
+  const scenes = SCENES.map((range) => ({
+    range,
+    el: root.querySelector<HTMLElement>(`[data-hero-scene="${range.id}"]`),
+  }));
+
+  const particles = root.querySelector<HTMLElement>("[data-hero-particles]");
+  const glow = root.querySelector<HTMLElement>("[data-hero-glow]");
+
+  const apply = (progress: number) => {
+    for (const { range, el } of scenes) {
+      if (!el) continue;
+      const alpha = alphaInSegment(progress, range.start, range.end);
+      const on = alpha > 0.02;
+      el.style.opacity = String(alpha);
+      el.style.visibility = on ? "visible" : "hidden";
+      el.style.pointerEvents = alpha > 0.5 ? "auto" : "none";
+      el.dataset.active = on ? "true" : "false";
+    }
+
+    if (particles) {
+      const a = alphaInSegment(progress, 0, 0.15) * 0.9;
+      particles.style.opacity = String(a);
+      particles.style.visibility = a > 0.02 ? "visible" : "hidden";
+    }
+
+    if (glow) {
+      const a = alphaInSegment(progress, 0.3, 0.45) * 0.85;
+      glow.style.opacity = String(a);
+      glow.style.visibility = a > 0.02 ? "visible" : "hidden";
+    }
+  };
+
+  return {
+    setProgress: apply,
+    hideAll: () => apply(-0.01),
+  };
+}
+
+export function getScrollScroller(isSmooth: boolean): HTMLElement | Window {
+  return isSmooth ? document.body : window;
+}
+
+/** @deprecated Use createHeroSceneController */
+export function enforceHeroSceneVisibility(root: HTMLElement, progress: number) {
+  createHeroSceneController(root).setProgress(progress);
+}
+
+/** @deprecated Use createHeroSceneController */
 export function hideAllHeroScenes(root: HTMLElement) {
-  enforceHeroSceneVisibility(root, -1);
+  createHeroSceneController(root).hideAll();
 }

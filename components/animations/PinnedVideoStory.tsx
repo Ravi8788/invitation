@@ -5,17 +5,15 @@ import {
   useContext,
   useLayoutEffect,
   useRef,
-  useState,
   type ReactNode,
 } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
-import { useMotionSettings } from "@/hooks/useMotionSettings";
 import { useLenisContext } from "@/hooks/useLenisContext";
-import { FrameVideoScrubber, waitForVideoReady } from "@/lib/videoScrubber";
-import { buildHeroStoryTimeline, getScrollScroller, HERO_SCROLL_END } from "@/lib/heroStoryGsap";
-import { enforceHeroSceneVisibility, hideAllHeroScenes } from "@/lib/heroSceneVisibility";
+import { HeroScrollEngine } from "@/lib/heroScrollEngine";
+import { getScrollScroller } from "@/lib/heroSceneVisibility";
+import { heroFrameUrl } from "@/lib/heroFrames";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -35,150 +33,107 @@ export function useVideoStoryProgress() {
 }
 
 interface PinnedVideoStoryProps {
-  src: string;
   children?: ReactNode;
   className?: string;
   id?: string;
 }
 
 /**
- * Apple-style pinned scroll story — waits for Lenis/proxy, one master timeline, video scrub sync.
+ * Pinned cinematic hero — preloaded WebP frame sequence (no video seeking).
  */
-export function PinnedVideoStory({ src, children, className, id }: PinnedVideoStoryProps) {
+export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  const { isMobile } = useMotionSettings();
-  const { isReady: scrollReady, isSmooth } = useLenisContext();
+  const progressRef = useRef<HTMLDivElement>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+  const contextRef = useRef<VideoStoryContextValue>({ ready: false, isComplete: false });
 
-  const [ready, setReady] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-  const isCompleteRef = useRef(false);
+  const reduced = useReducedMotion();
+  const { isReady: scrollReady, isSmooth } = useLenisContext();
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
-    const pin = pinRef.current;
-    const video = videoRef.current;
-    if (!section || !pin || !video || !scrollReady) return;
+    const stage = stageRef.current;
+    const canvas = canvasRef.current;
+    const overlay = overlayRef.current;
+    if (!section || !stage || !canvas || !overlay || !scrollReady) return;
 
     if (reduced) {
-      video.pause();
-      video.currentTime = 0;
-      setReady(true);
+      section.dataset.heroReady = "true";
+      placeholderRef.current?.remove();
+      contextRef.current.ready = true;
       return;
     }
 
-    let ctx: gsap.Context | undefined;
-    let scrubber: FrameVideoScrubber | undefined;
-    let cancelled = false;
+    const storyRoot = overlay.querySelector<HTMLElement>("[data-hero-story-root]");
+    if (!storyRoot) return;
 
-    const scrollEnd = isMobile ? HERO_SCROLL_END.mobile : HERO_SCROLL_END.desktop;
-    const scroller = getScrollScroller(isSmooth);
-    const setProgressBar = progressBarRef.current
-      ? gsap.quickSetter(progressBarRef.current, "scaleX")
-      : null;
+    let engine: HeroScrollEngine | undefined;
 
-    if (progressBarRef.current) {
-      gsap.set(progressBarRef.current, { scaleX: 0, transformOrigin: "left center" });
-    }
+    engine = new HeroScrollEngine({
+      section,
+      stage,
+      canvas,
+      storyRoot,
+      progressBar: progressRef.current,
+      scrollHint: overlay.querySelector('[data-story-hint="true"]'),
+      scroller: getScrollScroller(isSmooth),
+      onReady: () => {
+        section.dataset.heroReady = "true";
+        placeholderRef.current?.remove();
+        contextRef.current.ready = true;
+      },
+      onCompleteChange: (complete) => {
+        contextRef.current.isComplete = complete;
+      },
+    });
 
-    const init = async () => {
-      await waitForVideoReady(video);
-      if (cancelled || !video.duration || Number.isNaN(video.duration)) return;
-
-      video.pause();
-      video.currentTime = 0;
-      scrubber = new FrameVideoScrubber(video);
-
-      const hintEl = overlayRef.current?.querySelector<HTMLElement>('[data-story-hint="true"]');
-      const setHintOpacity = hintEl ? gsap.quickSetter(hintEl, "opacity") : null;
-      const storyRoot = overlayRef.current?.querySelector<HTMLElement>("[data-hero-story-root]");
-
-      if (!storyRoot) return;
-
-      hideAllHeroScenes(storyRoot);
-      const masterTimeline = buildHeroStoryTimeline(storyRoot);
-      masterTimeline.progress(0);
-      enforceHeroSceneVisibility(storyRoot, 0);
-
-      ctx?.revert();
-      ctx = gsap.context(() => {
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top top",
-          end: scrollEnd,
-          pin,
-          pinSpacing: true,
-          scrub: 1,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          scroller,
-          animation: masterTimeline,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            enforceHeroSceneVisibility(storyRoot, progress);
-            scrubber?.seekToProgress(progress);
-            setProgressBar?.(progress);
-            setHintOpacity?.(progress > 0.03 ? 0 : 1);
-
-            const complete = progress >= 0.995;
-            if (complete !== isCompleteRef.current) {
-              isCompleteRef.current = complete;
-              setIsComplete(complete);
-            }
-          },
-        });
-      }, section);
-
-      ScrollTrigger.refresh();
-      if (!cancelled) setReady(true);
-    };
-
-    void init();
+    void engine.init();
 
     return () => {
-      cancelled = true;
-      scrubber?.destroy();
-      ctx?.revert();
-      setReady(false);
+      engine?.destroy();
     };
-  }, [reduced, isMobile, src, scrollReady, isSmooth]);
+  }, [reduced, scrollReady, isSmooth]);
 
   return (
-    <VideoStoryContext.Provider value={{ ready, isComplete }}>
+    <VideoStoryContext.Provider value={contextRef.current}>
       <section
         ref={sectionRef}
         id={id}
         data-hero-section="true"
-        data-story-complete={isComplete ? "true" : "false"}
+        data-story-complete="false"
         className={cn("relative", className)}
-        aria-label="Engagement invitation story"
+        aria-label="Engagement cinematic story"
       >
-        <div ref={pinRef} className="relative h-[100dvh] h-[100svh] w-full overflow-hidden bg-twilight">
-          <video
-            ref={videoRef}
-            src={src}
-            muted
-            playsInline
-            preload="auto"
-            className={cn(
-              "pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_38%]",
-              ready ? "opacity-100" : "opacity-0",
-            )}
+        <div
+          ref={stageRef}
+          className="hero-cinematic-stage relative h-[100svh] w-full overflow-hidden bg-[#fdfbf7]"
+        >
+          <canvas
+            ref={canvasRef}
+            className="hero-frame-canvas pointer-events-none absolute inset-0 h-full w-full"
             aria-hidden
           />
 
-          {!ready ? (
-            <div
-              className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_50%_30%,rgba(255,140,66,0.2),rgba(15,21,41,0.98)_68%)]"
-              aria-hidden
+          {/* Static poster while frames preload */}
+          <div
+            ref={placeholderRef}
+            className="absolute inset-0 bg-[#fdfbf7]"
+            aria-hidden
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={heroFrameUrl(0)}
+              alt=""
+              className="h-full w-full object-cover object-[center_40%] opacity-90"
+              fetchPriority="high"
+              decoding="async"
             />
-          ) : null}
+          </div>
 
-          <div className="hero-video-overlay pointer-events-none absolute inset-0" aria-hidden />
+          <div className="hero-cinematic-overlay pointer-events-none absolute inset-0" aria-hidden />
 
           <div ref={overlayRef} className="absolute inset-0 z-20">
             {children}
@@ -186,12 +141,12 @@ export function PinnedVideoStory({ src, children, className, id }: PinnedVideoSt
 
           {!reduced ? (
             <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-0.5 bg-[#fdfbf7]/10"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-px bg-[#d4af37]/20"
               aria-hidden
             >
               <div
-                ref={progressBarRef}
-                className="h-full origin-left bg-gradient-to-r from-[#d4b483] to-[#b8935a] will-change-transform"
+                ref={progressRef}
+                className="hero-progress-bar h-full origin-left bg-gradient-to-r from-[#d4af37] to-[#b8935a]"
                 style={{ transform: "scaleX(0)" }}
               />
             </div>

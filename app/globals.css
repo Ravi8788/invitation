@@ -507,12 +507,48 @@ html:not(.invitation-locked) {
   }
 }
 
-/* Hero — matched to twilight mandap background video */
+/* Hero — ivory wash over mandap video for legible gold typography */
+.hero-cinematic-overlay {
+  background:
+    linear-gradient(to bottom, rgba(253, 251, 247, 0.42) 0%, transparent 18%),
+    linear-gradient(to top, rgba(253, 251, 247, 0.55) 0%, rgba(253, 251, 247, 0.18) 38%, transparent 62%),
+    radial-gradient(ellipse 85% 75% at 50% 48%, rgba(15, 21, 41, 0.38) 0%, transparent 72%);
+}
+
+.hero-cinematic-stage {
+  isolation: isolate;
+}
+
+[data-hero-section][data-hero-ready="true"] .hero-frame-canvas {
+  opacity: 1;
+}
+
+.hero-frame-canvas {
+  opacity: 0;
+  will-change: contents;
+}
+
+.hero-progress-bar {
+  will-change: transform;
+  transform: translate3d(0, 0, 0) scaleX(0);
+}
+
+.hero-couple-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(212, 175, 55, 0.35) 50%,
+    transparent 62%
+  );
+  mix-blend-mode: soft-light;
+}
+
+/* Legacy alias */
 .hero-video-overlay {
   background:
-    linear-gradient(to bottom, rgba(15, 21, 41, 0.65) 0%, rgba(15, 21, 41, 0.15) 16%, transparent 30%),
-    linear-gradient(to top, rgba(8, 10, 24, 0.55) 0%, rgba(15, 21, 41, 0.25) 35%, transparent 60%),
-    radial-gradient(ellipse 90% 80% at 50% 50%, rgba(8, 10, 24, 0.35) 0%, transparent 70%);
+    linear-gradient(to bottom, rgba(253, 251, 247, 0.42) 0%, transparent 18%),
+    linear-gradient(to top, rgba(253, 251, 247, 0.55) 0%, rgba(253, 251, 247, 0.18) 38%, transparent 62%),
+    radial-gradient(ellipse 85% 75% at 50% 48%, rgba(15, 21, 41, 0.38) 0%, transparent 72%);
 }
 
 /* Cinematic scroll story scenes — hidden until scroll controller activates one */
