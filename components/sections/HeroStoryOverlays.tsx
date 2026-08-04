@@ -4,7 +4,7 @@ import { memo } from "react";
 import { useReducedMotion } from "framer-motion";
 import { WEDDING } from "@/lib/constants";
 import { scrollToSection } from "@/lib/scrollToSection";
-import { GaneshaIcon } from "@/components/ui/GaneshaIcon";
+import { FOOTER_GANESHA_IMAGE } from "@/lib/images";
 
 const SceneShell = memo(function SceneShell({
   id,
@@ -41,7 +41,17 @@ function HeroIntroLayer() {
   return (
     <SceneShell id="1" backdrop>
       <div className="flex flex-col items-center text-center">
-        <GaneshaIcon className="mb-3 h-28 w-28 sm:mb-5 sm:h-32 sm:w-32 md:h-36 md:w-36" />
+        <div className="relative mx-auto mb-3 flex h-32 w-32 items-center justify-center sm:mb-5 sm:h-36 sm:w-36 md:h-40 md:w-40">
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(201,162,39,0.12)_0%,transparent_70%)]" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={FOOTER_GANESHA_IMAGE}
+            alt="श्री गणेश"
+            data-scene-el
+            className="relative z-10 h-full w-full object-contain"
+            decoding="async"
+          />
+        </div>
         <span
           data-scene-el
           className="hero-reel-gold font-sans mb-3 text-xs tracking-[0.3em] uppercase sm:mb-4 sm:text-sm"
