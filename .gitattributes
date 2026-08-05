@@ -1,0 +1,14 @@
+# Set default behavior, and handle binary files with Git LFS
+* text=auto
+# Track common media formats with Git LFS
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+# Specific folders
+public/videos/** filter=lfs diff=lfs merge=lfs -text
+public/audio/** filter=lfs diff=lfs merge=lfs -text
+.video-frames/** filter=lfs diff=lfs merge=lfs -text

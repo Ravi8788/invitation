@@ -36,6 +36,22 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Generated media / build artifacts
+/.video-frames/
+public/videos/hero-frames/
+public/videos/*.mp4
+public/audio/
+public/hero/source/
+
+# Extracted scripts
+scripts/extract-hero-frames.mjs
+scripts/extract-bg-music.mjs
+
+# Large images and frames
+*.webp
+*.mp4
+*.mp3
+
 # local AI editor rules (do not publish)
 AGENTS.md
 CLAUDE.md
