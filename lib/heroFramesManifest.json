@@ -1,8 +1,0 @@
-{
-  "frameCount": 150,
-  "fps": 15,
-  "width": 960,
-  "format": "webp",
-  "basePath": "/videos/hero-frames",
-  "pattern": "frame-%04d.webp"
-}

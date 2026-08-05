@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   },
   description: WEDDING.metadata.description,
   keywords: [
-    "सुपारी सुकरपुडा",
+    "सुपारी व साखरपुडा",
     "मराठी निमंत्रण",
     "Maharashtrian wedding invitation",
     "Satara",
@@ -109,7 +109,7 @@ export default function RootLayout({
     >
       <head>
         <link rel="preload" href="/images/ganesha.png" as="image" />
-        <link rel="preload" href="/videos/hero-frames/frame-0001.webp" as="image" />
+        <link rel="preload" href="/images/hero-bg.png" as="image" />
       </head>
       <body className="min-h-full overflow-x-hidden bg-onyx-dark font-body text-white select-none">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>

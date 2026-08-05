@@ -51,8 +51,8 @@ export function GaneshaOpener({ onComplete }: GaneshaOpenerProps) {
           <GaneshaIcon className="relative z-10 h-36 w-36 sm:h-40 sm:w-40" />
         </div>
 
-        <h2 className="hero-reel-gold font-serif mb-2 text-lg tracking-[0.3em] uppercase">
-          || {ui.opener.ganeshaMantra} ||
+        <h2 className="hero-reel-shloka-invocation mb-2">
+          ॥ {ui.opener.ganeshaMantra} ॥
         </h2>
         <p className="font-sans mb-8 text-[10px] tracking-[0.25em] text-white/50 uppercase">
           {couple.bride} & {couple.groom} • {ui.opener.eventTitle}

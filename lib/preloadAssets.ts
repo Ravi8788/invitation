@@ -1,5 +1,4 @@
 import { PRELOAD_IMAGES } from "@/lib/images";
-import { HERO_FRAME_COUNT, heroFrameUrl } from "@/lib/heroFrames";
 
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
@@ -17,19 +16,14 @@ function preloadFont(family: string): Promise<void> {
   return document.fonts.load(`1rem "${family}"`).then(() => undefined).catch(() => undefined);
 }
 
-/** Preload opener assets + all hero frames so scroll scrub is smooth from frame 1 */
+/** Preload opener assets + hero background for a smooth first paint */
 export async function preloadAssets(onProgress: (percent: number) => void): Promise<void> {
-  const heroJobs = Array.from({ length: HERO_FRAME_COUNT }, (_, i) =>
-    preloadImage(heroFrameUrl(i)),
-  );
-
   const jobs = [
     preloadFont("Cinzel"),
     preloadFont("Montserrat"),
     preloadFont("Cormorant Garamond"),
     preloadFont("Noto Serif Devanagari"),
     ...PRELOAD_IMAGES.map(preloadImage),
-    ...heroJobs,
   ];
   let completed = 0;
 

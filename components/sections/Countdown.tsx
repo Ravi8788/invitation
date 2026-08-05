@@ -3,7 +3,6 @@
 import { WEDDING } from "@/lib/constants";
 import { useCountdown } from "@/hooks/useCountdown";
 import { ReelSection, ReelSectionGrid } from "@/components/ui/ReelSection";
-import { ScratchCard } from "@/components/ui/ScratchCard";
 import { cn } from "@/lib/utils";
 
 function CountdownUnit({
@@ -18,9 +17,9 @@ function CountdownUnit({
   const digits = ready ? String(value).padStart(2, "0") : "--";
 
   return (
-    <div className="story-card flex min-h-[5.5rem] flex-col items-center justify-center rounded-2xl border border-reel-gold bg-onyx-dark/60 p-3 text-center backdrop-blur-sm sm:min-h-[7.5rem] sm:p-5 md:min-h-[8.5rem] md:p-8">
+    <div className="story-card flex min-h-[4.75rem] flex-col items-center justify-center rounded-xl border border-reel-gold bg-onyx-dark/60 p-2.5 text-center backdrop-blur-sm sm:min-h-[7.5rem] sm:rounded-2xl sm:p-5 md:min-h-[8.5rem] md:p-8">
       <span className="countdown-digit font-display tabular-nums">{digits}</span>
-      <span className="font-sans mt-2 block text-[9px] text-white/60 sm:mt-3 sm:text-[10px]">
+      <span className="font-sans mt-1.5 block text-[8px] text-white/60 sm:mt-3 sm:text-[10px]">
         {label}
       </span>
     </div>
@@ -50,7 +49,11 @@ function MandalaBackdrop() {
   );
 }
 
-function CountdownGrid({ ready, countdown, units }: {
+function CountdownGrid({
+  ready,
+  countdown,
+  units,
+}: {
   ready: boolean;
   countdown: ReturnType<typeof useCountdown>;
   units: typeof WEDDING.ui.countdown.units;
@@ -65,7 +68,7 @@ function CountdownGrid({ ready, countdown, units }: {
   );
 }
 
-/** Live countdown — scratch to reveal, then real-time tick */
+/** Live countdown to the event */
 export function Countdown() {
   const { weddingDate, ui, events } = WEDDING;
   const countdown = useCountdown(weddingDate.iso);
@@ -106,26 +109,16 @@ export function Countdown() {
         </div>
       ) : (
         <div className="reel-section-grid" aria-live="polite" aria-atomic="true">
-          <ScratchCard
-            variant="maroon"
-            className="countdown-scratch border-reel-gold bg-onyx-dark/90 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
-            scratchLabel={
-              <>
-                <p className="hero-reel-gold font-display text-lg sm:text-xl md:text-2xl">
-                  {ui.countdown.scratchTitle}
-                </p>
-                {ui.countdown.scratchHint ? (
-                  <p className="font-serif mt-3 text-sm text-white/70 italic">{ui.countdown.scratchHint}</p>
-                ) : null}
-              </>
-            }
-          >
-            <CountdownGrid ready={countdown.isReady} countdown={countdown} units={units} />
-          </ScratchCard>
+          <CountdownGrid ready={countdown.isReady} countdown={countdown} units={units} />
         </div>
       )}
 
-      <p className={cn("reel-section-header !mb-0 !mt-10 font-serif text-base italic sm:text-lg", "hero-reel-tagline")}>
+      <p
+        className={cn(
+          "reel-section-header !mb-0 !mt-5 font-serif text-sm italic sm:!mt-10 sm:text-lg",
+          "hero-reel-tagline",
+        )}
+      >
         {weddingDate.display}
       </p>
     </ReelSection>

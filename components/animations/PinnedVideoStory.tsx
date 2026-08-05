@@ -13,7 +13,7 @@ import { useReducedMotion } from "framer-motion";
 import { useLenisContext } from "@/hooks/useLenisContext";
 import { HeroScrollEngine } from "@/lib/heroScrollEngine";
 import { getScrollScroller } from "@/lib/heroSceneVisibility";
-import { heroFrameUrl } from "@/lib/heroFrames";
+import { HERO_BG_IMAGE } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -39,15 +39,13 @@ interface PinnedVideoStoryProps {
 }
 
 /**
- * Pinned cinematic hero — preloaded WebP frame sequence (no video seeking).
+ * Pinned cinematic hero — static background image with scroll-driven text scenes.
  */
 export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const placeholderRef = useRef<HTMLDivElement>(null);
   const contextRef = useRef<VideoStoryContextValue>({ ready: false, isComplete: false });
 
   const reduced = useReducedMotion();
@@ -56,13 +54,11 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
   useLayoutEffect(() => {
     const section = sectionRef.current;
     const stage = stageRef.current;
-    const canvas = canvasRef.current;
     const overlay = overlayRef.current;
-    if (!section || !stage || !canvas || !overlay || !scrollReady) return;
+    if (!section || !stage || !overlay || !scrollReady) return;
 
     if (reduced) {
       section.dataset.heroReady = "true";
-      placeholderRef.current?.remove();
       contextRef.current.ready = true;
       return;
     }
@@ -76,7 +72,6 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
     engine = new HeroScrollEngine({
       section,
       stage,
-      canvas,
       storyRoot,
       progressBar: progressRef.current,
       scrollHint: overlay.querySelector('[data-story-hint="true"]'),
@@ -85,7 +80,6 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
       onReady: () => {
         if (cancelled) return;
         section.dataset.heroReady = "true";
-        placeholderRef.current?.remove();
         contextRef.current.ready = true;
       },
       onCompleteChange: (complete) => {
@@ -93,13 +87,13 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
       },
     });
 
-    void engine.init();
+    engine.init();
 
     return () => {
       cancelled = true;
       engine?.destroy();
     };
-  }, [reduced, scrollReady, isSmooth]);
+  }, [reduced, scrollReady, isSmooth, lenisRef]);
 
   return (
     <VideoStoryContext.Provider value={contextRef.current}>
@@ -113,47 +107,40 @@ export function PinnedVideoStory({ children, className, id }: PinnedVideoStoryPr
       >
         <div
           ref={stageRef}
-          className="hero-cinematic-stage relative h-[100svh] w-full overflow-hidden bg-[#0a0a0a]"
+          className="hero-cinematic-stage relative h-[100svh] w-full overflow-hidden bg-[#1a0808]"
         >
-          <canvas
-            ref={canvasRef}
-            className="hero-frame-canvas pointer-events-none absolute inset-0 h-full w-full"
-            aria-hidden
-          />
-
-          {/* Static poster while frames preload */}
-          <div
-            ref={placeholderRef}
-            className="absolute inset-0 bg-onyx-dark"
-            aria-hidden
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className="hero-bg-wrap" aria-hidden>
             <img
-              src={heroFrameUrl(0)}
+              src={HERO_BG_IMAGE}
               alt=""
-              className="hero-frame-poster h-full w-full object-cover object-center opacity-100"
+              className="hero-bg-image pointer-events-none absolute inset-0"
               fetchPriority="high"
-              decoding="async"
+              loading="eager"
+              decoding="sync"
             />
           </div>
 
+          <div className="hero-cinematic-warm-wash pointer-events-none absolute inset-0" aria-hidden />
+          <div className="hero-cinematic-clarity pointer-events-none absolute inset-0" aria-hidden />
           <div className="hero-cinematic-overlay pointer-events-none absolute inset-0" aria-hidden />
-          <div className="pointer-events-none absolute inset-0 z-10 bg-radial-vignette opacity-45" aria-hidden />
+          <div className="hero-cinematic-vignette pointer-events-none absolute inset-0" aria-hidden />
+          <div className="hero-cinematic-frame pointer-events-none absolute inset-0" aria-hidden />
 
           <div ref={overlayRef} className="absolute inset-0 z-20">
             {children}
           </div>
 
           {!reduced ? (
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-px bg-[#d4af37]/20"
-              aria-hidden
-            >
-              <div
-                ref={progressRef}
-                className="hero-progress-bar h-full origin-left bg-gradient-to-r from-[#d4af37] to-[#b8935a]"
-                style={{ transform: "scaleX(0)" }}
-              />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30" aria-hidden>
+              <div className="h-px bg-gradient-to-r from-transparent via-[#d4af37]/35 to-transparent" />
+              <div className="h-[2px] bg-[#0a0a0a]/40">
+                <div
+                  ref={progressRef}
+                  className="hero-progress-bar h-full origin-left"
+                  style={{ transform: "scaleX(0)" }}
+                />
+              </div>
             </div>
           ) : null}
         </div>

@@ -1,15 +1,11 @@
 import gsap from "gsap";
 
 const EASE = "power2.out";
-const EASE_IO = "power3.inOut";
-const T = 100;
+/** Timeline ends at 92 — matches HERO_CONTENT_END_PROGRESS */
+const T = 92;
 
 function scene(root: HTMLElement, id: string) {
   return root.querySelector<HTMLElement>(`[data-hero-scene="${id}"]`);
-}
-
-function el(parent: Element | null | undefined, sel: string) {
-  return parent?.querySelector<HTMLElement>(sel) ?? null;
 }
 
 function inAnim(
@@ -38,44 +34,30 @@ export function initHeroStoryElements(root: HTMLElement) {
 export function buildHeroStoryTimeline(root: HTMLElement): gsap.core.Timeline {
   const tl = gsap.timeline({ paused: true });
 
-  // Layer 1 — Intro (0–25%)
+  // Layer 1 — Ganesha + shloka (0–24%)
   const s1 = scene(root, "1");
   s1?.querySelectorAll<HTMLElement>("[data-scene-el]").forEach((node, i) => {
-    inAnim(tl, node, 1 + i * 1.5, 2.2, { y: 20 });
+    inAnim(tl, node, 1 + i * 1.2, 2, { y: 18 });
   });
 
-  // Layer 2 — Tradition (25–50%)
+  // Layer 2 — Blessings (24–48%)
   const s2 = scene(root, "2");
-  inAnim(tl, el(s2, "[data-scene-heading]"), 26, 2.8, { y: 26 });
   s2?.querySelectorAll<HTMLElement>("[data-scene-line]").forEach((line, i) => {
-    inAnim(tl, line, 28 + i * 1.2, 2, { y: 14 });
+    inAnim(tl, line, 24 + i * 1.5, 2.2, { y: 16 });
   });
-  inAnim(tl, el(s2, "[data-scene-tagline]"), 32, 2.5, { y: 16 });
 
-  // Layer 3 — Shubh Muhurat (50–75%)
+  // Layer 3 — Journey (48–72%)
   const s3 = scene(root, "3");
-  inAnim(tl, el(s3, "[data-scene-eyebrow]"), 51, 2, { y: 12 });
-  inAnim(tl, el(s3, "[data-scene-heading]"), 52.5, 2.8, { y: 24 });
-  s3?.querySelectorAll<HTMLElement>("[data-scene-schedule]").forEach((card, i) => {
-    tl.fromTo(
-      card,
-      { y: 20, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 2 / T, ease: EASE, delay: (i * 0.08) / T },
-      55 / T,
-    );
+  s3?.querySelectorAll<HTMLElement>("[data-scene-line]").forEach((line, i) => {
+    inAnim(tl, line, 48 + i * 1.5, 2.2, { y: 16 });
   });
-  inAnim(tl, el(s3, "[data-scene-venue-block]"), 60, 2.2, { y: 16 });
 
-  // Layer 4 — Celebration card (75–100%)
+  // Layer 4 — Couple + event (72–100%) — event title visible well before pin ends
   const s4 = scene(root, "4");
-  tl.fromTo(
-    el(s4, "[data-scene-card]"),
-    { scale: 0.94, autoAlpha: 0, y: 24 },
-    { scale: 1, autoAlpha: 1, y: 0, duration: 3 / T, ease: EASE_IO },
-    76 / T,
-  );
-  s4?.querySelectorAll<HTMLElement>("[data-scene-el]").forEach((node, i) => {
-    inAnim(tl, node, 78 + i * 1, 2, { y: 12 });
+  const s4Nodes = s4?.querySelectorAll<HTMLElement>("[data-scene-el]") ?? [];
+  s4Nodes.forEach((node, i) => {
+    const isLast = i === s4Nodes.length - 1;
+    inAnim(tl, node, isLast ? 77.5 : 73 + i * 1.25, isLast ? 2.5 : 1.6, { y: 16 });
   });
 
   return tl;

@@ -12,6 +12,10 @@ export interface Couple {
   groomPortrait?: string;
   brideGrandparents?: string;
   groomGrandparents?: string;
+  groomFormalName?: string;
+  brideFormalName?: string;
+  groomOrigin?: string;
+  brideOrigin?: string;
 }
 
 export interface WeddingDate {
@@ -21,11 +25,14 @@ export interface WeddingDate {
   display: string;
   dateRange: string;
   celebrationTitle: string;
+  scratch: {
+    month: string;
+    day: string;
+    year: string;
+  };
 }
 
 export interface HeroContent {
-  eyebrow: string;
-  tagline: string;
   sanskrit?: string;
   scrollHint?: string;
 }
@@ -128,22 +135,15 @@ export interface UiStrings {
     scrollHint: string;
   };
   heroLayers: {
-    tradition: {
-      titlePrefix: string;
-      titleAccent: string;
-      body: string;
-      tagline: string;
+    blessings: {
+      line1: string;
+      line2: string;
     };
-    muhurat: {
-      eyebrow: string;
-      eventLabel: string;
-      venueLabel: string;
+    journey: {
+      lines: readonly string[];
     };
-    celebration: {
-      eyebrow: string;
-      title: string;
-      body: string;
-      cta: string;
+    couple: {
+      eventTitle: string;
     };
   };
   door: {
@@ -176,12 +176,21 @@ export interface UiStrings {
   };
   saveDate: {
     eyebrow: string;
+    title: string;
+    scratchHint: string;
+    labels: {
+      month: string;
+      day: string;
+      year: string;
+    };
   };
   couple: {
     eyebrow: string;
     title: string;
     sonOf: string;
     daughterOf: string;
+    groomRelation: string;
+    brideRelation: string;
   };
   venue: {
     titlePrefix: string;
@@ -219,6 +228,10 @@ export interface UiStrings {
   };
   footer: {
     developer: string;
+    developerWhatsapp: {
+      phone: string;
+      message: string;
+    };
     madeFor: string;
     backToTop: string;
     shloka: string;

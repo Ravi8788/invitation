@@ -10,14 +10,6 @@ import { FOOTER_GANESHA_IMAGE } from "@/lib/images";
 import { ReelSection } from "@/components/ui/ReelSection";
 import { cn } from "@/lib/utils";
 
-function FooterOmDivider() {
-  return (
-    <div className="reel-footer-om-rule" aria-hidden>
-      <span className="reel-footer-om">ॐ</span>
-    </div>
-  );
-}
-
 export function Footer() {
   const { ui } = WEDDING;
   const { lenisRef, isReady } = useLenisContext();
@@ -32,11 +24,13 @@ export function Footer() {
     }
   };
 
+  const invitationLines = ui.footer.shloka.split("\n").filter(Boolean);
+
   return (
     <>
-      <ReelSection id="footer-section" theme="footer" noHeader className="pb-16 pt-20 sm:pb-20 sm:pt-24">
+      <ReelSection id="footer-section" theme="footer" noHeader className="pb-8 pt-8 sm:pb-20 sm:pt-24">
         <div className="reel-footer-shell">
-          <div className="relative mx-auto mb-8 flex h-36 w-36 items-center justify-center sm:mb-10 sm:h-44 sm:w-44">
+          <div className="relative mx-auto mb-3 flex h-20 w-20 items-center justify-center sm:mb-10 sm:h-44 sm:w-44">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={FOOTER_GANESHA_IMAGE}
@@ -46,8 +40,14 @@ export function Footer() {
             />
           </div>
 
-          <p className="reel-footer-shloka">{ui.footer.shloka}</p>
-          <p className="reel-footer-shloka-en">{ui.footer.shlokaEnglish}</p>
+          <p className="reel-footer-shloka">
+            {invitationLines.map((line, index) => (
+              <span key={line}>
+                {index > 0 ? <br /> : null}
+                {line}
+              </span>
+            ))}
+          </p>
 
           <h3 className="reel-footer-initials">
             {COUPLE_LATIN.bride.charAt(0)}{" "}
@@ -72,11 +72,14 @@ export function Footer() {
             ))}
           </nav>
 
-          <FooterOmDivider />
-
-          <p className="reel-footer-meta">{ui.footer.metaLine}</p>
-          <p className="reel-footer-credit">{ui.footer.madeFor}</p>
-          <p className="reel-footer-credit">{ui.footer.developer}</p>
+          <a
+            href={`https://wa.me/${ui.footer.developerWhatsapp.phone}?text=${encodeURIComponent(ui.footer.developerWhatsapp.message)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="reel-footer-credit reel-footer-credit-link"
+          >
+            {ui.footer.developer}
+          </a>
         </div>
       </ReelSection>
 

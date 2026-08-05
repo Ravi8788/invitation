@@ -42,10 +42,7 @@ CLAUDE.md
 .cursor/
 
 # dev-only artifacts (not needed in production)
-reference-frames/
 lighthouse-report*.json
-
-public/audio/bg-music-source.mpeg
 
 # typescript
 *.tsbuildinfo

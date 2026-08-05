@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { InvitationExperience } from "@/components/InvitationExperience";
 import { Countdown } from "@/components/sections/Countdown";
 import { CoupleNames } from "@/components/sections/CoupleNames";
-import { Family } from "@/components/sections/Family";
+import { SaveDate } from "@/components/sections/SaveDate";
 import { Footer } from "@/components/sections/Footer";
 import { SectionSkeleton } from "@/components/sections/SectionSkeleton";
 
@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <InvitationExperience>
       <CoupleNames />
-      <Family />
+      <SaveDate />
       <Countdown />
       <Venue />
       <Footer />

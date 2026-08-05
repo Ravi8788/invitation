@@ -15,13 +15,13 @@ function InfoRow({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-4 text-left">
-      <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gold/10">
+    <div className="flex items-start gap-3 text-left sm:gap-4">
+      <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gold/10 sm:h-8 sm:w-8">
         {icon}
       </div>
       <div className="min-w-0 flex-1">
         <span className="mb-0.5 block text-[9px] text-white/40">{label}</span>
-        <span className="font-serif text-base leading-snug text-white/90">{value}</span>
+        <span className="font-serif text-sm leading-snug text-white/90 sm:text-base">{value}</span>
       </div>
     </div>
   );
@@ -66,9 +66,9 @@ export function Venue() {
       innerClassName="max-w-6xl"
     >
       <ReelSectionGrid className="max-w-5xl items-stretch lg:grid-cols-2">
-        <div className="story-card flex h-full flex-col justify-between rounded-2xl border border-gold/15 bg-onyx-dark/50 p-8 backdrop-blur-sm transition-all duration-500 hover:border-gold/30 sm:p-10">
+        <div className="story-card flex h-full flex-col justify-between rounded-xl border border-gold/15 bg-onyx-dark/50 p-5 backdrop-blur-sm transition-all duration-500 hover:border-gold/30 sm:rounded-2xl sm:p-10">
           <div>
-            <div className="mb-6 flex items-center justify-center gap-3 sm:justify-start">
+            <div className="mb-4 flex items-center justify-center gap-2.5 sm:mb-6 sm:justify-start sm:gap-3">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-gold/30 text-gold">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" aria-hidden>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -80,14 +80,14 @@ export function Venue() {
               </span>
             </div>
 
-            <h3 className="font-display mb-2 text-center text-2xl text-white sm:text-left sm:text-3xl">
+            <h3 className="font-display mb-1.5 text-center text-xl text-white sm:mb-2 sm:text-left sm:text-3xl">
               {venue.name}
             </h3>
-            <p className="font-sans mb-8 text-center text-sm leading-relaxed text-white/60 sm:text-left">
+            <p className="font-sans mb-5 text-center text-xs leading-relaxed text-white/60 sm:mb-8 sm:text-left sm:text-sm">
               {venue.address}
             </p>
 
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               <InfoRow
                 label={ui.venue.dateLabel}
                 value={weddingDate.date}
@@ -122,7 +122,7 @@ export function Venue() {
             href={venue.directionsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="reel-open-btn mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-[10px] font-semibold sm:text-xs"
+            className="reel-open-btn mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-[9px] font-semibold sm:mt-8 sm:py-3.5 sm:text-xs"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -133,7 +133,7 @@ export function Venue() {
 
         <div
           ref={mapContainerRef}
-          className="story-card relative min-h-[320px] overflow-hidden rounded-2xl border border-gold/15 sm:min-h-[400px] lg:min-h-full"
+          className="story-card relative min-h-[240px] overflow-hidden rounded-xl border border-gold/15 sm:min-h-[400px] sm:rounded-2xl lg:min-h-full"
         >
           {mapVisible ? (
             <iframe

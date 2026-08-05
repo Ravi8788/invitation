@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 const THEME_CLASS = {
   alliance: "section-onyx-alliance",
   blessings: "section-onyx-blessings",
+  saveDate: "section-onyx-save-date",
   countdown: "section-onyx-countdown",
   venue: "section-onyx-venue",
   footer: "section-onyx-footer",
@@ -49,7 +50,7 @@ export function ReelSection({
           <header className={cn("reel-section-header", headerClassName)}>
             {leading}
             {eyebrow ? (
-              <span className="reel-section-eyebrow hero-reel-gold font-sans mb-3 block">
+              <span className="reel-section-eyebrow hero-reel-gold font-sans mb-2 block sm:mb-3">
                 {eyebrow}
               </span>
             ) : null}
@@ -57,10 +58,10 @@ export function ReelSection({
               <h2 className="reel-section-title font-display text-white">{title}</h2>
             ) : null}
             {subtitle ? (
-              <p className="reel-section-subtitle font-serif mx-auto mt-4 max-w-xl italic">{subtitle}</p>
+              <p className="reel-section-subtitle font-serif mx-auto mt-2 max-w-xl italic sm:mt-4">{subtitle}</p>
             ) : null}
-            {meta ? <div className="reel-section-meta font-sans mt-4">{meta}</div> : null}
-            <div className="reel-section-divider" aria-hidden />
+            {meta ? <div className="reel-section-meta font-sans mt-2 sm:mt-4">{meta}</div> : null}
+            <div className="reel-section-divider mt-3 sm:mt-4" aria-hidden />
           </header>
         ) : null}
         {children}
@@ -80,7 +81,7 @@ export function ReelSectionGrid({ children, cols = 2, className }: ReelSectionGr
   return (
     <div
       className={cn(
-        "reel-section-grid grid w-full gap-6 sm:gap-8 md:gap-10",
+        "reel-section-grid grid w-full gap-3 sm:gap-8 md:gap-10",
         cols === 1 && "grid-cols-1",
         cols === 2 && "grid-cols-1 md:grid-cols-2",
         cols === 4 && "grid-cols-2 sm:grid-cols-4",

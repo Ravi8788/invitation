@@ -7,14 +7,19 @@ const SCENES = [
   { id: "4", ...HERO_SCENE_RANGES.scene4 },
 ] as const;
 
-const EDGE = 0.06;
+const EDGE = 0.08;
 
-function alphaInSegment(progress: number, start: number, end: number): number {
-  if (progress < start || progress >= end) return 0;
+function alphaInSegment(
+  progress: number,
+  start: number,
+  end: number,
+  options?: { holdAtEnd?: boolean },
+): number {
+  if (progress < start || progress > end) return 0;
   const span = end - start;
   const t = (progress - start) / span;
   if (t < EDGE) return t / EDGE;
-  if (t > 1 - EDGE) return (1 - t) / EDGE;
+  if (!options?.holdAtEnd && t > 1 - EDGE) return (1 - t) / EDGE;
   return 1;
 }
 
@@ -32,7 +37,9 @@ export function createHeroSceneController(root: HTMLElement): HeroSceneControlle
   const apply = (progress: number) => {
     for (const { range, el } of scenes) {
       if (!el) continue;
-      const alpha = alphaInSegment(progress, range.start, range.end);
+      const alpha = alphaInSegment(progress, range.start, range.end, {
+        holdAtEnd: range.id === "4",
+      });
       const on = alpha > 0.02;
       el.style.opacity = String(alpha);
       el.style.visibility = on ? "visible" : "hidden";

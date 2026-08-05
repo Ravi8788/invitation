@@ -2,15 +2,13 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
 import { buildHeroStoryTimeline, initHeroStoryElements } from "@/lib/heroStoryGsap";
-import { HERO_SCROLL_END } from "@/lib/heroStoryScenes";
+import { getHeroScrollEnd, HERO_CONTENT_END_PROGRESS } from "@/lib/heroStoryScenes";
 import { createHeroSceneController, getScrollScroller } from "@/lib/heroSceneVisibility";
-import { FrameSequenceScrubber } from "@/lib/frameSequenceScrubber";
 import { syncScrollLayout } from "@/lib/scrollSync";
 
 export interface HeroScrollEngineConfig {
   section: HTMLElement;
   stage: HTMLElement;
-  canvas: HTMLCanvasElement;
   storyRoot: HTMLElement;
   progressBar: HTMLElement | null;
   scrollHint: HTMLElement | null;
@@ -21,12 +19,11 @@ export interface HeroScrollEngineConfig {
 }
 
 /**
- * Pinned hero — final.mp4 frame scrub + GSAP text layers, synced to scroll.
+ * Pinned hero — static background + GSAP text layers synced to scroll.
  */
 export class HeroScrollEngine {
   private readonly config: HeroScrollEngineConfig;
   private ctx?: gsap.Context;
-  private scrubber?: FrameSequenceScrubber;
   private scrollTrigger?: ScrollTrigger;
   private sceneController?: ReturnType<typeof createHeroSceneController>;
   private setBar: ((value: number) => void) | null = null;
@@ -41,11 +38,10 @@ export class HeroScrollEngine {
     this.config = config;
   }
 
-  async init() {
+  init() {
     const {
       section,
       stage,
-      canvas,
       storyRoot,
       progressBar,
       scrollHint,
@@ -70,15 +66,11 @@ export class HeroScrollEngine {
       : null;
 
     this.resizeObserver = new ResizeObserver(() => {
-      this.scrubber?.resize();
       syncScrollLayout(lenis);
     });
     this.resizeObserver.observe(stage);
 
-    this.onResize = () => {
-      this.scrubber?.resize();
-      syncScrollLayout(lenis);
-    };
+    this.onResize = () => syncScrollLayout(lenis);
     window.addEventListener("resize", this.onResize);
     window.addEventListener("orientationchange", this.onResize);
 
@@ -88,10 +80,10 @@ export class HeroScrollEngine {
       this.scrollTrigger = ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: HERO_SCROLL_END,
+        end: () => getHeroScrollEnd(),
         pin: stage,
         pinSpacing: true,
-        scrub: 1,
+        scrub: 0.55,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         fastScrollEnd: false,
@@ -102,14 +94,6 @@ export class HeroScrollEngine {
         },
       });
     }, section);
-
-    syncScrollLayout(lenis);
-
-    try {
-      this.scrubber = await FrameSequenceScrubber.create(canvas);
-    } catch (error) {
-      console.error("[HeroScrollEngine] Frame sequence failed to load:", error);
-    }
 
     syncScrollLayout(lenis);
     setTimeout(() => syncScrollLayout(lenis), 100);
@@ -132,11 +116,10 @@ export class HeroScrollEngine {
     if (progress < 0) return;
 
     this.sceneController?.setProgress(progress);
-    this.scrubber?.setProgress(progress);
     this.setBar?.(progress);
     this.setHint?.(progress > 0.02 ? 0 : 1);
 
-    const done = progress >= 0.998;
+    const done = progress >= HERO_CONTENT_END_PROGRESS - 0.02;
     if (done !== this.complete) {
       this.complete = done;
       this.config.section.dataset.storyComplete = done ? "true" : "false";
@@ -154,7 +137,6 @@ export class HeroScrollEngine {
       window.removeEventListener("orientationchange", this.onResize);
     }
     this.resizeObserver?.disconnect();
-    this.scrubber?.destroy();
     this.ctx?.revert();
     this.scrollTrigger = undefined;
   }

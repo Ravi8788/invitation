@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "extract-hero-frames": "node scripts/extract-hero-frames.mjs",
-    "extract-bg-music": "node scripts/extract-bg-music.mjs"
+    "lint": "eslint"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

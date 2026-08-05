@@ -7,7 +7,8 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OpenGraphImage() {
-  const { couple, weddingDate, venue } = WEDDING;
+  const { couple, weddingDate, venue, events } = WEDDING;
+  const eventName = events[0]?.name ?? weddingDate.celebrationTitle;
 
   return new ImageResponse(
     (
@@ -35,7 +36,7 @@ export default function OpenGraphImage() {
           }}
         >
           <p style={{ fontSize: 28, color: "#D4AF37", letterSpacing: 6, margin: 0 }}>
-            सुपारी सुकरपुडा
+            {eventName}
           </p>
           <p style={{ fontSize: 64, color: "#FFF8F0", margin: "24px 0 8px" }}>
             {couple.bride} आणि {couple.groom}

@@ -1,19 +1,24 @@
-import { HERO_FRAME_COUNT, HERO_FRAMES } from "@/lib/heroFrames";
-
-/** Duration of final.mp4 reel (seconds) */
-export const HERO_VIDEO_SECONDS = HERO_FRAME_COUNT / HERO_FRAMES.fps;
+/** Scroll progress where the final hero line is fully visible — pin ends here. */
+export const HERO_CONTENT_END_PROGRESS = 0.92;
 
 /**
- * Scroll distance for pinned hero — ~1 viewport height per second of video.
- * 10s reel → 1000% (10 screen-heights) while pinned.
+ * Scroll distance for pinned hero — ends soon after the last line appears.
  */
-export const HERO_SCROLL_END = "+=1000%" as const;
+export function getHeroScrollEnd(): string {
+  if (typeof window === "undefined") return "+=260%";
+  const base = window.matchMedia("(max-width: 639px)").matches ? 2.8 : 3.6;
+  return `+=${Math.round(base * HERO_CONTENT_END_PROGRESS * 100)}%`;
+}
+
+/** @deprecated use getHeroScrollEnd() */
+export const HERO_SCROLL_END = "+=260%" as const;
 
 export const HERO_SCENE_RANGES = {
-  scene1: { start: 0, end: 0.25 },
-  scene2: { start: 0.25, end: 0.5 },
-  scene3: { start: 0.5, end: 0.75 },
-  scene4: { start: 0.75, end: 1 },
+  scene1: { start: 0, end: 0.24 },
+  scene2: { start: 0.24, end: 0.48 },
+  scene3: { start: 0.48, end: 0.72 },
+  /** Stay visible through pin release so the event title line can show */
+  scene4: { start: 0.72, end: 1 },
 } as const;
 
 export const HERO_STORY_SCENES = [

@@ -5,11 +5,68 @@ import { cn } from "@/lib/utils";
 
 interface ScratchCardProps {
   className?: string;
-  scratchLabel: React.ReactNode;
+  scratchLabel?: React.ReactNode;
   revealThreshold?: number;
   onReveal?: () => void;
   children: React.ReactNode;
-  variant?: "light" | "maroon";
+  variant?: "light" | "maroon" | "coral" | "date";
+  compact?: boolean;
+}
+
+function paintCoralScratch(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = "#f6efe6";
+  ctx.fillRect(0, 0, width, height);
+
+  const blobs = [
+    { x: 0.18, y: 0.22, rx: 0.34, ry: 0.28, color: "rgba(255, 198, 186, 0.72)" },
+    { x: 0.72, y: 0.18, rx: 0.28, ry: 0.22, color: "rgba(255, 214, 204, 0.65)" },
+    { x: 0.55, y: 0.58, rx: 0.38, ry: 0.3, color: "rgba(244, 180, 168, 0.58)" },
+    { x: 0.22, y: 0.72, rx: 0.3, ry: 0.24, color: "rgba(255, 225, 216, 0.7)" },
+  ];
+
+  for (const blob of blobs) {
+    ctx.fillStyle = blob.color;
+    ctx.beginPath();
+    ctx.ellipse(
+      width * blob.x,
+      height * blob.y,
+      width * blob.rx,
+      height * blob.ry,
+      0,
+      0,
+      Math.PI * 2,
+    );
+    ctx.fill();
+  }
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
+  ctx.fillRect(0, height * 0.78, width, height * 0.22);
+
+  ctx.fillStyle = "rgba(139, 58, 58, 0.45)";
+  ctx.font = `600 ${Math.max(9, width * 0.055)}px Montserrat, sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("SCRATCH", width / 2, height * 0.9);
+}
+
+function paintScratchLayer(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  variant: ScratchCardProps["variant"],
+) {
+  if (variant === "coral") {
+    paintCoralScratch(ctx, width, height);
+    return;
+  }
+
+  if (variant === "date" || variant === "maroon") {
+    paintGold(ctx, width, height);
+    return;
+  }
+
+  paintGold(ctx, width, height);
 }
 
 function isCoarsePointer() {
@@ -37,6 +94,7 @@ export function ScratchCard({
   onReveal,
   children,
   variant = "maroon",
+  compact = false,
 }: ScratchCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,6 +106,8 @@ export function ScratchCard({
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const lastHeightRef = useRef(0);
   const onMaroon = variant === "maroon";
+  const onCoral = variant === "coral";
+  const onDate = variant === "date";
   const mobile = isCoarsePointer();
   const threshold = mobile ? 0.28 : revealThreshold;
   const brushRadius = mobile ? 58 : 28;
@@ -167,14 +227,14 @@ export function ScratchCard({
       if (!ctx) return;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      paintGold(ctx, width, height);
+      paintScratchLayer(ctx, width, height, variant);
     };
 
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(container);
     return () => observer.disconnect();
-  }, [mobile]);
+  }, [mobile, variant]);
 
   useEffect(() => {
     if (!scratching) return;
@@ -291,16 +351,33 @@ export function ScratchCard({
     <div
       ref={containerRef}
       className={cn(
-        "relative overflow-hidden rounded-2xl border shadow-[0_12px_40px_rgba(122,30,43,0.12)]",
-        "min-h-[min(72vw,320px)] select-none overscroll-none touch-none sm:min-h-[280px]",
-        onMaroon
-          ? "border-primary/25 bg-twilight/80 shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
-          : "border-primary/30 bg-bg/90",
+        "relative overflow-hidden select-none overscroll-none touch-none",
+        compact ? "date-scratch-card-shell" : "min-h-[min(72vw,320px)] rounded-2xl sm:min-h-[280px]",
+        !compact && "rounded-2xl border shadow-[0_12px_40px_rgba(122,30,43,0.12)]",
+        onDate
+          ? "date-scratch-card-shell--date"
+          : onCoral
+            ? compact
+              ? "date-scratch-card-shell--coral"
+              : "border-[#c45c5c]/40 bg-[#b83d3d] shadow-[0_12px_32px_rgba(184,61,61,0.25)]"
+            : onMaroon
+              ? "border-primary/25 bg-twilight/80 shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
+              : "border-primary/30 bg-bg/90",
         className,
       )}
       style={{ touchAction: "none", WebkitTouchCallout: "none", WebkitUserSelect: "none" }}
     >
-      <div className="relative z-0 p-6 text-center sm:p-8 md:p-12">{children}</div>
+      <div
+        className={cn(
+          "relative z-0 flex items-center justify-center text-center",
+          compact ? "min-h-[118px] p-2.5 sm:min-h-[200px] sm:p-6" : "p-6 sm:p-8 md:p-12",
+          onDate && "bg-[#fffaf5]",
+          revealed ? "opacity-100" : "opacity-0",
+        )}
+        aria-hidden={!revealed}
+      >
+        {children}
+      </div>
 
       {!revealed ? (
         <>
@@ -316,18 +393,30 @@ export function ScratchCard({
             aria-label="Scratch to reveal"
             role="img"
           />
-          <div
-            className={cn(
-              "pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center px-6 text-center",
-              onMaroon ? "text-ivory" : "text-maroon-deep",
-            )}
-            aria-hidden="true"
-          >
-            {scratchLabel}
-            {mobile ? (
-              <p className="font-body mt-4 text-[10px] opacity-60">घासून उघडा</p>
-            ) : null}
-          </div>
+          {!onDate ? (
+            <div
+              className={cn(
+                "pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center",
+                onCoral
+                  ? "text-[#8b3030]/80"
+                  : onMaroon
+                    ? "text-ivory"
+                    : "text-maroon-deep",
+              )}
+              aria-hidden="true"
+            >
+              <>
+                {!onCoral ? scratchLabel : null}
+                {mobile ? (
+                  <p className={cn("font-body text-[10px]", onCoral ? "mt-auto mb-4 opacity-70" : "mt-4 opacity-60")}>
+                    घासून उघडा
+                  </p>
+                ) : onCoral ? (
+                  <p className="font-body mt-auto mb-5 text-[10px] tracking-[0.18em] opacity-60">घासून उघडा</p>
+                ) : null}
+              </>
+            </div>
+          ) : null}
         </>
       ) : null}
     </div>
