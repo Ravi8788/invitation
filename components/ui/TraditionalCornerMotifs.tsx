@@ -12,7 +12,7 @@ export function TraditionalCornerMotifs() {
       {corners.map((position) => (
         <div
           key={position}
-          className={`pointer-events-none absolute ${position} h-48 w-48 text-gold opacity-90 md:h-80 md:w-80`}
+          className={`pointer-events-none absolute ${position} h-32 w-32 text-gold opacity-80 sm:h-48 sm:w-48 md:h-80 md:w-80`}
           aria-hidden
         >
           <CornerSvg />
