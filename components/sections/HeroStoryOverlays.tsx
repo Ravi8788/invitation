@@ -18,7 +18,7 @@ const SceneShell = memo(function SceneShell({
       data-hero-scene={id}
       className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-2.5 pt-[calc(2rem+env(safe-area-inset-top))] pb-[max(3.5rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-[calc(3.25rem+env(safe-area-inset-top))] sm:pb-[max(6rem,env(safe-area-inset-bottom))]"
     >
-      <div className="hero-scene-inner w-full max-w-[18rem] sm:max-w-lg">{children}</div>
+      <div className="hero-scene-inner w-full max-w-[21rem] sm:max-w-lg">{children}</div>
     </div>
   );
 });
