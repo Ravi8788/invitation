@@ -54,8 +54,8 @@ export function Family() {
     >
       <ReelSectionGrid>
         <BlessingCard label={ui.family.swagatTitle} sublabel={ui.family.welcomedBy}>
-          <p className="font-serif text-base font-medium text-white/90">{couple.groomParents}</p>
-          <p className="font-serif text-base font-medium text-white/90">{couple.brideParents}</p>
+          <p className="whitespace-pre-line font-serif text-base font-medium text-white/90">{couple.groomParents}</p>
+          <p className="whitespace-pre-line font-serif text-base font-medium text-white/90">{couple.brideParents}</p>
         </BlessingCard>
 
         <BlessingCard label={ui.family.darshanTitle} sublabel={ui.family.awaitingBlessings}>

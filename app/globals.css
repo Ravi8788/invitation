@@ -755,6 +755,10 @@ html:not(.invitation-locked) {
   color: rgba(255, 255, 255, 0.92);
 }
 
+.alliance-person-parents {
+  white-space: pre-line;
+}
+
 .alliance-swastika-rule {
   display: flex;
   align-items: center;
